@@ -1,11 +1,15 @@
 {
-  "todo" : [ 
+  "todo" : [
+    "add render method to nodes",
+    "write a tree walker for rendering nodes",
+    "build an example for rendering a simple shape onto a canvas",
+    "build a simple example showing off z-ordering",
     "build a simple example which demonstrates mouse picking and render order",
-    "allow nodes to store a position in 2d space",
     "allow nodes to store arbitrary information which is used by the renderer",
     "do caching of bounding squares for clipping"
   ],
   "done" : [
+    "allow nodes to store a position in 2d (and z coord for render order)",
     "build out a <i>very</i> minimal tree structure",
     "write unit tests to check that this tree will function as expected"
   ],
