@@ -4,5 +4,8 @@ import os
 VERSION = '0.0.1'
 
 def test(ctx):
-  os.system("node test/node.js");
-
+  out = os.popen('node test/node.js').read();
+  fp = open("test/status.json", "w+");
+  fp.write(out);
+  fp.close();
+  

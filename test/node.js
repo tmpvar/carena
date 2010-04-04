@@ -25,29 +25,38 @@ var ok = function(logic, failmsg)
 }
 
 // sanity
-ok(0 === (new carena.node()).x, "carena.node did not init properly" );
-
-// dirty for x,y,height,width
 var obj = new carena.node()
+ok(0 === obj.x, "carena.node did not init properly" );
+ok(0 === obj.id, "carena nodes are id'd")
+// dirty for x,y,height,width
+
 ok(false === obj.dirty, "carena.node should not be dirty by default");
 
-var dirties = ['x', 'y', 'height', 'width'];
+var dirties = ['x', 'y', 'z', 'height', 'width'];
 for (var i=0; i<dirties.length; i++)
 {
   obj.clean();
   ok(false === obj.dirty, "clean had no effect!");
   obj[dirties[i]] = 5;
+  ok(dirties[i] !== 5, "value needs to be set");
   ok(true === obj.dirty, "when setting " + dirties[i] + " the node should be dirty");
 }
 
 // tree tests
-obj.addChild(new carena.node());
+var child = new carena.node();
+ok(1 === child.id, "carena nodes are id'd")
+obj.add(child);
+ok(true === obj.dirty, "adding a new node should make the parent dirty");
+ok(obj === child.parent, "adding a child node should automatically create a link to the parent")
+ok(1 === obj.children.length, "adding a node should update the children array");
+obj.clean();
 
-
+obj.remove(child);
+ok(true === obj.dirty, "removing a node should make the parent dirty");
+ok(0 === obj.children.length, "remove should update the length");
 
 sys.puts(JSON.stringify({
  total: pass+fail,
  fail: fail,
  pass: pass
 }));
-
