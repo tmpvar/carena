@@ -51,9 +51,21 @@ ok(obj === child.parent, "adding a child node should automatically create a link
 ok(1 === obj.children.length, "adding a node should update the children array");
 obj.clean();
 
+var grandchild = new carena.node();
+child.add(grandchild);
+obj.clean();
+child.clean();
+grandchild.clean();
+
+// test tiering dirtyness!
+grandchild.x = 50;
+ok(true === obj.dirty, "dirtyness should tier up the tree to the trunk");
+
 obj.remove(child);
 ok(true === obj.dirty, "removing a node should make the parent dirty");
 ok(0 === obj.children.length, "remove should update the length");
+
+
 
 sys.puts(JSON.stringify({
  total: pass+fail,
