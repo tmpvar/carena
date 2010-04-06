@@ -43,7 +43,6 @@
           scene.update = (function() {
             var delta = 1;
             return function(time) {  
-              console.log(time)
               scene.x+=delta;
               scene.y+=delta;
               if (scene.x+scene.width  > canvas.width || 
