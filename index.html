@@ -2,6 +2,15 @@
   <head>
     <title>Carena</title>
     <script type="text/javascript" src="lib/carena.js"></script>
+    <script type="text/javascript">
+      function mapRecursive(node, fn) {
+        fn(node);
+        var i=0; len = node.children.length;
+        for (i; i<len; i++) {
+          mapRecursive(node.children[i], fn);  
+        }
+      };
+    </script>
   </head>
   <body>
     <h1>Carena</h1>
@@ -13,10 +22,145 @@
     <p>
       MIT, see <a href="LICENSE.txt">LICENSE.txt</a>
     </p>
-    
-    <h2>Demos</h2>
+    <p>
+      <h2>Demos</h2>
+      Since its fairly difficult to visualize a scene graph, these are all
+      renderings.
+    <p>
     <p>
       <h3>Simple rendering</h3>
+      <canvas id="simple" width="200" height="200"></canvas>
+      <script type="text/javascript">
+        (function() {
+          var canvas = document.getElementById("simple");
+          var ctx = canvas.getContext("2d");
+
+          // a single square
+          var scene = new carena.node();
+          scene.height = 50;
+          scene.width  = 50
+
+          scene.update = (function() {
+            var delta = 1;
+            return function(time) {  
+              scene.x+=(time/16) * delta;
+              scene.y+=(time/16) * delta;
+              if (scene.x+scene.width  > canvas.width || 
+                  scene.y+scene.height > canvas.height) 
+              {
+                delta = -1;
+              } else if (scene.x < 0 || scene.y < 0) {
+                delta = 1;
+              }
+            }          
+          })();
+
+          scene.render = function(time) {
+            ctx.fillStyle ="#FF6600";
+            ctx.fillRect(scene.x,scene.y,scene.width,scene.height)
+          };      
+          
+          
+          // render..
+          var ms = 0, interval = 16;
+          setInterval(function() {
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            
+            ms+=interval;
+
+            mapRecursive(scene, function(node) {
+              node.update(interval);
+            });
+
+            mapRecursive(scene, function(node) {
+              node.render(interval);
+            });
+          }, interval);
+            
+        })();
+      </script>
+    </p>
+
+    <p>
+      <h3>Relative rendering</h3>
+      <canvas id="relative" width="200" height="200"></canvas>
+      <script type="text/javascript">
+        (function() {
+          var canvas = document.getElementById("relative");
+          var ctx = canvas.getContext("2d");
+
+          // a single square
+          var scene = new carena.node();
+          scene.height = 50;
+          scene.width  = 50
+
+          scene.update = (function() {
+            var delta = 1;
+            return function(time) {  
+              scene.x+=(time/16) * delta;
+              scene.y+=(time/16) * delta;
+              if (scene.x+scene.width  > canvas.width || 
+                  scene.y+scene.height > canvas.height) 
+              {
+                delta = -1;
+              } else if (scene.x < 0 || scene.y < 0) {
+                delta = 1;
+              }
+            }          
+          })();
+
+          scene.render = function(time) {
+            ctx.fillStyle ="#FF6600";
+            ctx.fillRect(scene.x,scene.y,scene.width,scene.height)
+          };
+          
+          var child = new carena.node();
+          child.height = 10;
+          child.width  = 10;
+          
+          child.update = (function() {
+            var delta = 1;
+            return function(time) {  
+              child.y+=(time/8) * delta;
+              if (this.y+child.height > this.parent.height) 
+              {
+                delta = -1;
+              } else if (this.y < 0) {
+                delta = 1;
+              }
+            }          
+          })();
+
+          child.render = function(time) {
+            ctx.fillStyle ="#0000AA";
+            ctx.fillRect(this.parent.x+this.parent.width/2-this.width/2,
+                         this.parent.y+child.y,
+                         this.width,
+                         this.height);
+          };
+          scene.add(child);
+          
+          // render..
+          var ms = 0, interval = 16;
+          setInterval(function() {
+            ms+=interval;
+
+            mapRecursive(scene, function(node) {
+              node.update(interval);
+            });
+
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            mapRecursive(scene, function(node) {
+              node.render(interval);
+            });
+          }, interval);
+            
+        })();
+        
+      </script>
+      
     </p>
     
 
