@@ -1,6 +1,5 @@
-var carena = require("../lib/carena");
 var sys    = require("sys");
-
+var carena = require("../lib/carena").carena;
 
 var tests = [], pass = 0, fail = 0;
 var ok = function(logic, failmsg)
