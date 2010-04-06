@@ -116,17 +116,19 @@
           };
           
           var child = new carena.node();
-          child.height = 10;
-          child.width  = 10;
+          scene.add(child);
+          child.height = 30;
+          child.width  = 30;
           
           child.update = (function() {
             var delta = 1;
             return function(time) {  
-              child.y+=(time/8) * delta;
-              if (this.y+child.height > this.parent.height) 
+              child.y+=(time/16) * delta;
+              child.x = child.parent.x+child.parent.width/2-child.width/2;
+              if (child.y+child.height > child.parent.height) 
               {
                 delta = -1;
-              } else if (this.y < 0) {
+              } else if (child.y < 0) {
                 delta = 1;
               }
             }          
@@ -134,12 +136,42 @@
 
           child.render = function(time) {
             ctx.fillStyle ="#0000AA";
-            ctx.fillRect(this.parent.x+this.parent.width/2-this.width/2,
-                         this.parent.y+child.y,
-                         this.width,
-                         this.height);
+            ctx.fillRect(child.x,
+                         child.parent.y+child.y,
+                         child.width,
+                         child.height);
           };
-          scene.add(child);
+          
+
+
+          var grand = new carena.node();
+          grand.height = 10;
+          grand.width  = 10;
+          
+          grand.update = (function() {
+            var granddelta = 1;
+            return function(time) {  
+              grand.x = (time/20) * granddelta;
+              console.log(child.x);
+              grand.y = child.y;// + (grand.parent.height/2-grand.height/2);
+              if (grand.x > child.x+child.width) 
+              {
+                delta = -1;
+              } else if (grand.x < child.x) {
+                delta = 1;
+              }
+            }          
+          })();
+
+          grand.render = function(time) {
+            ctx.fillStyle ="#00FF00";
+            ctx.fillRect(grand.x,
+                         grand.y,
+                         grand.width,
+                         grand.height);
+          };
+          child.add(grand);
+          
           
           // render..
           var ms = 0, interval = 16;
