@@ -1,19 +1,22 @@
 {
   "todo" : [
-    "add render method to nodes",
-    "write a tree walker for rendering nodes",
-    "build an example for rendering a simple shape onto a canvas",
-    "build a simple example showing off z-ordering",
-    "build a simple example which demonstrates mouse picking and render order",
-    "allow nodes to store arbitrary information which is used by the renderer",
-    "do caching of bounding squares for clipping"
+    "write a recursive map for rendering nodes",
+    "build an abstract renderer which includes stubs for render/update",
+    "build a simple example which demonstrates mouse picking (mouse in bounds)"
+  ],
+  "future" : [
+    "aggregate & cache bounding squares of nodes + children"  
   ],
   "done" : [
+    "build an example for rendering a simple shape onto a canvas",
+    "allow nodes to store basic information which is used by a renderer",
     "allow nodes to store a position in 2d (and z coord for render order)",
     "build out a <i>very</i> minimal tree structure",
     "write unit tests to check that this tree will function as expected"
   ],
   "nope" : [
+    "build a simple example showing off z-ordering",
+    "add render method to nodes",
     "provide simple operations such as re-ordering nodes on a parent"
   ]
 }
