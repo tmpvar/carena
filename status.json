@@ -5,9 +5,9 @@
     "build a simple example which demonstrates mouse picking (mouse in bounds)"
   ],
   "future" : [
-    "aggregate & cache bounding squares of nodes + children"  
   ],
   "done" : [
+    "aggregate & cache bounding squares of nodes + children"  ,
     "build an example for rendering a simple shape onto a canvas",
     "allow nodes to store basic information which is used by a renderer",
     "allow nodes to store a position in 2d (and z coord for render order)",
