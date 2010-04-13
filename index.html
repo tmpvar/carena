@@ -198,8 +198,55 @@
       </script>
       
     </p>
-    
+    <p>
+      <h3>Basic Mouse picking</h3>
+      click on the square..<br />
+      <canvas id="mouse-pick" width="200" height="200"></canvas>
+      <script type="text/javascript">
+        (function() {
+          var canvas = document.getElementById("mouse-pick");
+          var ctx = canvas.getContext("2d");
+          
+          // a single square
+          var pickable = new carena.node();
+          pickable.height = 50;
+          pickable.width  = 50;
+          pickable.x = 10;
+          pickable.y = 10;
+          pickable.color = "red"
+          
+          canvas.onmousedown = function(event) {
+            if (pickable.containsPoint(event.pageX-canvas.offsetLeft, event.pageY-canvas.offsetTop)) {
+              pickable.color = "blue";
+            }
+          };
+          
+          document.onmouseup = function(event) {
+            pickable.color = "red";
+          };
 
+          pickable.render = function(time) {
+            ctx.fillStyle = pickable.color;
+            ctx.fillRect(pickable.x,pickable.y,pickable.width,pickable.height)
+          };      
+          
+          // render..
+          var ms = 0, interval = 16;
+          setInterval(function() {
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            
+            ms+=interval;
+
+            mapRecursive(pickable, function(node) {
+              node.render(ms);
+            });
+
+          }, interval);
+            
+        })();
+      </script>
+    </p>
 
     <p>
       more coming soon..
