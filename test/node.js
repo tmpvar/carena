@@ -65,6 +65,33 @@ ok(true === obj.dirty, "removing a node should make the parent dirty");
 ok(0 === obj.children.length, "remove should update the length");
 
 
+// Bounding boxen (no rotation)
+var scene  = new carena.node(), 
+    child1 = new carena.node(), 
+    child2 = new carena.node();
+scene.add(child1).add(child2);
+
+scene.x=0;
+scene.y=0;
+scene.width=10;
+scene.height=10;
+
+child1.x=-1;
+child1.y=-1;
+child1.width=5;
+child1.height=5;
+
+child2.x=6;
+child2.y=6;
+child2.width=10;
+child2.height=10;
+
+ok(scene.bounds, "bounds should calculate on the first call/when dirty");
+ok(scene.bounds.x      === -1, "bounding rect x is invalid");
+ok(scene.bounds.y      === -1, "bounding rect y is invalid");
+ok(scene.bounds.width  === 16, "bounding rect width is invalid");
+ok(scene.bounds.height === 16, "bounding rect height is invalid");
+ok(scene.dirty === false, "scene should be clean after a bounds calculation");
 
 sys.puts(JSON.stringify({
  total: pass+fail,
