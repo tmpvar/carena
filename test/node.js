@@ -46,7 +46,7 @@ var child = new carena.node();
 ok(1 === child.id, "carena nodes are id'd")
 obj.add(child);
 ok(true === obj.dirty, "adding a new node should make the parent dirty");
-ok(obj === child.parent, "adding a child node should automatically create a link to the parent")
+ok(obj === child.parent, "new children get linked to the new parent");
 ok(1 === obj.children.length, "adding a node should update the children array");
 obj.clean();
 
@@ -66,15 +66,16 @@ ok(0 === obj.children.length, "remove should update the length");
 
 
 // Bounding boxen (no rotation)
-var scene  = new carena.node(), 
+var bounding  = new carena.node(), 
     child1 = new carena.node(), 
     child2 = new carena.node();
-scene.add(child1).add(child2);
+bounding.add(child1);
+bounding.add(child2);
 
-scene.x=0;
-scene.y=0;
-scene.width=10;
-scene.height=10;
+bounding.x=0;
+bounding.y=0;
+bounding.width=10;
+bounding.height=10;
 
 child1.x=-1;
 child1.y=-1;
@@ -82,16 +83,38 @@ child1.width=5;
 child1.height=5;
 
 child2.x=6;
-child2.y=6;
+child2.y=1;
 child2.width=10;
 child2.height=10;
 
-ok(scene.bounds, "bounds should calculate on the first call/when dirty");
-ok(scene.bounds.x      === -1, "bounding rect x is invalid");
-ok(scene.bounds.y      === -1, "bounding rect y is invalid");
-ok(scene.bounds.width  === 16, "bounding rect width is invalid");
-ok(scene.bounds.height === 16, "bounding rect height is invalid");
-ok(scene.dirty === false, "scene should be clean after a bounds calculation");
+ok(bounding.bounds, "bounds should calculate on the first call/when dirty");
+ok(bounding.bounds.x      === -1, "bounding rect x is invalid");
+ok(bounding.bounds.y      === -1, "bounding rect y is invalid");
+ok(bounding.bounds.width  === 16, "bounding rect width is invalid");
+ok(bounding.bounds.height === 11, "bounding rect height is invalid");
+ok(bounding.dirty === false, "scene should be clean after a bounds calculation");
+
+ok(child2.bounds.x      === 6, "bounding rect x is invalid");
+ok(child2.bounds.y      === 1, "bounding rect y is invalid");
+ok(child2.bounds.width  === 10, "bounding rect width is invalid");
+ok(child2.bounds.height === 10, "bounding rect height is invalid");
+
+// Point intersection
+ok(bounding.containsPoint(-1,-1) === false, "scene starts at 0,0");
+ok(bounding.containsPoint(5,5) === true, "5,5 is the center of the scene");
+ok(bounding.containsPoint(10,10) === true, "10,10 is the bottom right of scene");
+ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
+ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
+ok(child2.containsPoint(8,10) === true, "8,10 is contained in child2");
+ok(child2.containsPoint(-1,-1) === false, "-1,-1 is not contained in child2");
+
+// Node picking
+ok(bounding.getNodeAtPoint(-10,-10) === null, "blatently wrong");
+ok(bounding.getNodeAtPoint(-1,-1) === child1, "child1 lives on -1,-1");
+ok(bounding.getNodeAtPoint(0,4) === child1, "child1 contains on 0,4");
+ok(bounding.getNodeAtPoint(6,1) === child2, "child2 lives on 6,1");
+ok(bounding.getNodeAtPoint(6,6) === child2, "child2 contains on 6,6");
+ok(bounding.getNodeAtPoint(7,0) === bounding, "scene contains 0,7");
 
 sys.puts(JSON.stringify({
  total: pass+fail,
