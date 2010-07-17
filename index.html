@@ -3,11 +3,11 @@
     <title>Carena</title>
     <script type="text/javascript" src="lib/carena.js"></script>
     <script type="text/javascript">
-      function mapRecursive(node, fn) {
+      var mapRecursive = function(node, fn) {
         fn(node);
-        var i=0; len = node.children.length;
+        var i = 0, len = node.children.length;
         for (i; i<len; i++) {
-          mapRecursive(node.children[i], fn);  
+          mapRecursive(node.children[i], fn);
         }
       };
     </script>
@@ -22,12 +22,9 @@
     <p>
       MIT, see <a href="LICENSE.txt">LICENSE.txt</a>
     </p>
-    <p>
       <h2>Demos</h2>
       Since its fairly difficult to visualize a scene graph, these are all
       renderings.
-    <p>
-    <p>
       <h3>Simple rendering</h3>
       <canvas id="simple" width="200" height="200"></canvas>
       <script type="text/javascript">
@@ -80,174 +77,150 @@
             
         })();
       </script>
-    </p>
-
-    <p>
-      <h3>Relative rendering</h3>
-      <canvas id="relative" width="200" height="200"></canvas>
-      <script type="text/javascript">
-        (function() {
-          var canvas = document.getElementById("relative");
-          var ctx = canvas.getContext("2d");
-
-          // a single square
-          var scene = new carena.node();
-          scene.height = 50;
-          scene.width  = 50
-
-          scene.update = (function() {
-            var delta = 1;
-            return function(time) {  
-              scene.x+=delta;
-              scene.y+=delta;
-              if (scene.x+scene.width  > canvas.width || 
-                  scene.y+scene.height > canvas.height) 
-              {
-                delta = -1;
-              } else if (scene.x < 0 || scene.y < 0) {
-                delta = 1;
-              }
-            }          
-          })();
-
-          scene.render = function(time) {
-            ctx.fillStyle ="#FF6600";
-            ctx.fillRect(scene.x,scene.y,scene.width,scene.height)
-          };
-          
-          var child = new carena.node();
-          scene.add(child);
-          child.height = 30;
-          child.width  = 30;
-          
-          child.update = (function() {
-            var delta = 1, y=0;
-            
-            return function(time) {  
-              y+=delta
-              child.y += y;
-              child.x += child.parent.width/2-child.width/2;
-              if (child.y+child.height > child.parent.y + child.parent.height) 
-              {
-                delta = -1;
-              } else if (child.y < child.parent.y) {
-                delta = 1;
-              }
-            }          
-          })();
-
-          child.render = function(time) {
-            ctx.fillStyle ="#0000AA";
-            ctx.fillRect(child.x,
-                         child.y,
-                         child.width,
-                         child.height);
-          };
-          
-
-
-          var grand = new carena.node();
-          grand.height = 10;
-          grand.width  = 10;
-          
-          grand.update = (function() {
-            var delta = 1, x = 0;
-            return function(time) { 
-              x+=delta; 
-              grand.x += x;// (time/20) * delta;
-              grand.y += (grand.parent.height/2-grand.height/2);
-              if (grand.x+grand.width > child.x+child.width) 
-              {
-                delta = -1;
-              } else if (grand.x < child.x) {
-                delta = 1;
-              }
-            }          
-          })();
-
-          grand.render = function(time) {
-            ctx.fillStyle ="#00FF00";
-            ctx.fillRect(grand.x,
-                         grand.y,
-                         grand.width,
-                         grand.height);
-          };
-          child.add(grand);
-          
-          
-          // render..
-          var ms = 0, interval = 16;
-          setInterval(function() {
-            ms+=interval;
-
-            mapRecursive(scene, function(node) {
-              node.x = node.parent.x;
-              node.y = node.parent.y;
-              node.update(ms);
-            });
-
-            ctx.fillStyle = "#000000";
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            mapRecursive(scene, function(node) {
-              node.render(ms);
-            });
-          }, interval);
-            
-        })();
-        
-      </script>
-      
-    </p>
-    <p>
       <h3>Basic Mouse picking</h3>
       click on the square..<br />
       <canvas id="mouse-pick" width="200" height="200"></canvas>
       <script type="text/javascript">
         (function() {
           var canvas = document.getElementById("mouse-pick");
-          var ctx = canvas.getContext("2d");
+          var ctx = canvas.getContext("2d"), pickedNode = null;
           
-          // a single square
-          var pickable = new carena.node();
-          pickable.height = 50;
-          pickable.width  = 50;
-          pickable.x = 10;
-          pickable.y = 10;
-          pickable.color = "red"
+          var pickscene = new carena.node();
+          pickscene.x = 0;
+          pickscene.y = 0;
+          pickscene.width = canvas.width;
+          pickscene.height = canvas.height;
+
+          var pickable1 = new carena.node();
+          pickable1.height = 50;
+          pickable1.width  = 50;
+          pickable1.x = 10;
+          pickable1.y = 10;
+          pickable1.normalColor = pickable1.color = "red"
+          pickscene.add(pickable1);
+
+          pickable1.render = function(time) {
+            if (pickable1.color) {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(pickable1.x,
+                           pickable1.y,
+                           pickable1.width,
+                           pickable1.height);
+            }
+          };
+
+          var pickable2 = new carena.node();
           
+          pickable2.height = 50
+          pickable2.width  = 50;
+          pickable2.x = 20;
+          pickable2.y = 20;
+          pickable2.normalColor = pickable2.color = "green"
+          pickscene.add(pickable2);
+
+          pickable2.render = function(time) {
+            if (pickable2.color) {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(pickable2.x,
+                           pickable2.y,
+                           pickable2.width,
+                           pickable2.height);
+            }
+          };
+
+
           canvas.onmousedown = function(event) {
-            if (pickable.containsPoint(event.pageX-canvas.offsetLeft, event.pageY-canvas.offsetTop)) {
-              pickable.color = "blue";
+            var x = event.pageX-canvas.offsetLeft, 
+                y = event.pageY-canvas.offsetTop;
+            if ((pickedNode = pickscene.getNodeAtPoint(x,y))) {
+              pickedNode.color = "blue";              
             }
           };
           
           document.onmouseup = function(event) {
-            pickable.color = "red";
+            if (pickedNode) {
+              pickedNode.color = pickedNode.normalColor;
+            }
+            pickedNode = null
           };
-
-          pickable.render = function(time) {
-            ctx.fillStyle = pickable.color;
-            ctx.fillRect(pickable.x,pickable.y,pickable.width,pickable.height)
-          };      
           
           // render..
-          var ms = 0, interval = 16;
-          setInterval(function() {
+          var ms = 0, interval = 30;
+          setTimeout(function renderer() {
             ctx.fillStyle = "#000000";
             ctx.fillRect(0,0,canvas.width,canvas.height);
-            
             ms+=interval;
-
-            mapRecursive(pickable, function(node) {
-              node.render(ms);
+            mapRecursive(pickscene, function(node) {           
+              if (node.render) { node.render(ms); }
             });
-
+            
+            setTimeout(renderer, interval);
           }, interval);
             
         })();
       </script>
-    </p>
+      <h3>Tracking mouse movement</h3>
+      <br />
+      <canvas id="gridscene" width="200" height="200"></canvas>
+      <script type="text/javascript">
+        (function() {
+          var canvas = document.getElementById("gridscene"),
+              ctx = canvas.getContext("2d"), pickedNode = null,
+              grid = [],
+              gridscene = new carena.node(),
+              size = 2,
+              peices = (canvas.width*canvas.height)/size;
+          window.gridsceneCarena = gridscene;
+          ctx.fillStyle = "#000000";
+          ctx.fillRect(0,0,canvas.width,canvas.height);
+          
+          function buildSquare(idx) {
+            var width = canvas.width/size,
+                square = new carena.node();
 
+            square.x      = idx%canvas.width;
+            square.y      = Math.floor(idx/canvas.width)*size;
+            square.width  = size;
+            square.height = size;
+            square.color  = "red";
+            gridscene.add(square);
+          }
+          
+          for (var i=0; i<peices; i+=size) {
+            buildSquare(i);
+          }
+
+          document.onmousemove = function(event) {
+            var x = event.pageX-canvas.offsetLeft,
+                y = event.pageY-canvas.offsetTop;
+            gridscene.walk(function(node) {
+              if (node.containsPoint(x,y)) {
+                node.dirty = true;
+              }
+            });
+          };
+
+          // render
+          var ms = 0, interval = 16;
+          gridscene.bounds;
+          setInterval(function renderer() {
+            gridscene.walk(function(node) {
+              if (node.dirty) {
+                ctx.fillStyle = node.color;
+                ctx.fillRect(node.x,
+                             node.y,
+                             node.width,
+                             node.height);
+                node.clean();
+              } else {
+                return false;
+              }
+            });
+            ms+=interval;
+          }, interval);
+
+        })();
+      </script>
     <p>
       more coming soon..
     </p>

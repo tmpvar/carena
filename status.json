@@ -2,11 +2,13 @@
   "todo" : [
     "write a recursive map for rendering nodes",
     "build an abstract renderer which includes stubs for render/update",
-    "build a simple example which demonstrates mouse picking (mouse in bounds)"
+    "add a more advanced mouse picking example that makes use of the tree",
+    "add the an example demonstrating to drag boxes around"
   ],
   "future" : [
   ],
   "done" : [
+    "build a simple example which demonstrates mouse picking (mouse in bounds)",
     "aggregate & cache bounding squares of nodes + children"  ,
     "build an example for rendering a simple shape onto a canvas",
     "allow nodes to store basic information which is used by a renderer",

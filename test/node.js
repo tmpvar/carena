@@ -1,5 +1,5 @@
-var sys    = require("sys");
-var carena = require("../lib/carena").carena;
+var sys    = require("sys"),
+    carena = require("../lib/carena").carena;
 
 var tests = [], pass = 0, fail = 0;
 var ok = function(logic, failmsg)
@@ -23,52 +23,112 @@ var ok = function(logic, failmsg)
     }
 }
 
-// sanity
-var obj = new carena.node()
-ok(0 === obj.x, "carena.node did not init properly" );
-ok(0 === obj.id, "carena nodes are id'd")
-// dirty for x,y,height,width
+// Base feature testing
+ok(carena.feature.Node({}).x === 0, "Nodes should provide an x coord");
 
-ok(false === obj.dirty, "carena.node should not be dirty by default");
+// Carena Object Construction
+var nodeFactory = carena.Design({}, [carena.feature.Node]);
+var aNode = nodeFactory();
+ok(aNode.bounds, "Built objects should contain all of the features designated by the 'Design' call");
 
-var dirties = ['x', 'y', 'z', 'height', 'width'];
+var anExtendedNode = nodeFactory({}, [function(obj) { obj.set = true }]);
+ok(anExtendedNode.set === true, "Built factories should respect new features");
+ok(anExtendedNode.x === 0, "Built factories should still respect old features");
+
+// Node Mutation Events
+
+// Node Dirtyness
+var dirties = ['x', 'y', 'z', 'height', 'width'], dirtyTest = nodeFactory({});
 for (var i=0; i<dirties.length; i++)
 {
-  obj.clean();
-  ok(false === obj.dirty, "clean had no effect!");
-  obj[dirties[i]] = 5;
+  dirtyTest.clean();
+  ok(false === dirtyTest.dirty, "clean had no effect!");
+  dirtyTest[dirties[i]] = 5;
   ok(dirties[i] !== 5, "value needs to be set");
-  ok(true === obj.dirty, "when setting " + dirties[i] + " the node should be dirty");
+  ok(true === dirtyTest.dirty, "when setting " + dirties[i] + " the node should be dirty");
 }
 
-// tree tests
-var child = new carena.node();
-ok(1 === child.id, "carena nodes are id'd")
-obj.add(child);
-ok(true === obj.dirty, "adding a new node should make the parent dirty");
-ok(obj === child.parent, "new children get linked to the new parent");
-ok(1 === obj.children.length, "adding a node should update the children array");
-obj.clean();
 
-var grandchild = new carena.node();
-child.add(grandchild);
-obj.clean();
-child.clean();
-grandchild.clean();
+// Node Tree
+var parent = nodeFactory(), child = nodeFactory();
+parent.add(child);
+ok(true === parent.dirty, "adding a new node should make the parent dirty");
+ok(parent === child.parent, "new children get linked to the new parent");
+ok(1 === parent.children.length, "parent.add() updates the children array");
+parent.remove(child);
+ok(0 === parent.children.length, "remove should update the length");
+
+
+// Node Tree Traversal
+var traversal1  = nodeFactory(),
+    traversal2  = nodeFactory()
+    traversal2a = nodeFactory(),
+    traversal3  = nodeFactory()
+    ;
+traversal1.add(traversal2.add(traversal2a)).add(traversal3);
 
 // test tiering dirtyness!
-grandchild.x = 50;
-ok(true === obj.dirty, "dirtyness should tier up the tree to the trunk");
+traversal2a.x = 50;
+ok(true === traversal1.dirty, "dirtyness should tier up the tree to the trunk");
 
-obj.remove(child);
-ok(true === obj.dirty, "removing a node should make the parent dirty");
-ok(0 === obj.children.length, "remove should update the length");
+traversal1.remove(traversal3);
+ok(true === traversal1.dirty, "removing a node should make the parent dirty");
+traversal1.add(traversal3);
 
+var allResult = traversal1.descend();
+ok(allResult.nodesWalked === 4, "walked " + allResult.nodesWalked + " of 4 nodes");
+
+var falseResult = traversal1.descend(function(node) { 
+  if (node === traversal2) {
+    return false;
+  }
+});
+ok(falseResult.nodesWalked === 3, "when a walk callback returns false, stop walking that branch");
+
+var cancelledResult = traversal1.descend(function(node, walker) { 
+  if (node === traversal2) {
+    walker.stop();
+  }
+});
+ok(cancelledResult.nodesWalked === 2, "when a walk is cancelled, stop immediately");
+
+/*
+// Node Event Feature
+carena.Node.addFeature("event", carena.features.event);
+var topNode = new carena.Node(),
+    midNode = new carena.Node(),
+    botNode = new carena.Node();
+
+topNode.add(midNode.add(botNode));
+
+var eventCount = 0;
+topNode.event.bind("*", function(ev, obj) {
+  eventCount++;
+});
+midNode.event.bind("test.*", function(ev, obj) {
+  eventCount++;
+});
+midNode.event.bind("test.event", function(ev, obj) {
+  eventCount++;
+});
+
+botNode.event.trigger("test.event");
+ok(eventCount === 3, "when an event is triggered it bubbles up the tree");
+
+eventCount = 0;
+midNode.event.unbind("test.*");
+botNode.event.trigger("test.event");
+ok(eventCount === 1, "unbind by namespace and wildcard");
+
+
+/*
 
 // Bounding boxen (no rotation)
-var bounding  = new carena.node(), 
-    child1 = new carena.node(), 
-    child2 = new carena.node();
+var bounding    = new carena.node(),
+    child1      = new carena.node(),
+    child2      = new carena.node(),
+    child1child = new carena.node();
+
 bounding.add(child1);
 bounding.add(child2);
 
@@ -87,6 +147,7 @@ child2.y=1;
 child2.width=10;
 child2.height=10;
 
+// Bounding box check
 ok(bounding.bounds, "bounds should calculate on the first call/when dirty");
 ok(bounding.bounds.x      === -1, "bounding rect x is invalid");
 ok(bounding.bounds.y      === -1, "bounding rect y is invalid");
@@ -108,14 +169,8 @@ ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child2.containsPoint(8,10) === true, "8,10 is contained in child2");
 ok(child2.containsPoint(-1,-1) === false, "-1,-1 is not contained in child2");
 
-// Node picking
-ok(bounding.getNodeAtPoint(-10,-10) === null, "blatently wrong");
-ok(bounding.getNodeAtPoint(-1,-1) === child1, "child1 lives on -1,-1");
-ok(bounding.getNodeAtPoint(0,4) === child1, "child1 contains on 0,4");
-ok(bounding.getNodeAtPoint(6,1) === child2, "child2 lives on 6,1");
-ok(bounding.getNodeAtPoint(6,6) === child2, "child2 contains on 6,6");
-ok(bounding.getNodeAtPoint(7,0) === bounding, "scene contains 0,7");
 
+*/
 sys.puts(JSON.stringify({
  total: pass+fail,
  fail: fail,
