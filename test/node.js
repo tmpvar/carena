@@ -121,7 +121,7 @@ ok(eventCount === 1, "unbind by namespace and wildcard");
 
 
 
-/*
+
 // Bounding boxen (no rotation)
 var bounding    = nodeFactory(),
     child1      = nodeFactory(),
@@ -149,15 +149,16 @@ child2.height=10;
 // Bounding box check
 ok(bounding.bounds, "bounds should calculate on the first call/when dirty");
 ok(bounding.bounds.x      === -1, "bounding rect x is invalid");
+
 ok(bounding.bounds.y      === -1, "bounding rect y is invalid");
 ok(bounding.bounds.width  === 16, "bounding rect width is invalid");
 ok(bounding.bounds.height === 11, "bounding rect height is invalid");
 ok(bounding.dirty === false, "scene should be clean after a bounds calculation");
 
-ok(child2.bounds.x      === 6, "bounding rect x is invalid");
-ok(child2.bounds.y      === 1, "bounding rect y is invalid");
-ok(child2.bounds.width  === 10, "bounding rect width is invalid");
-ok(child2.bounds.height === 10, "bounding rect height is invalid");
+ok(child2.bounds.x      === 6, "child2 rect x is invalid");
+ok(child2.bounds.y      === 1, "child2 rect y is invalid");
+ok(child2.bounds.width  === 10, "child2 rect width is invalid");
+ok(child2.bounds.height === 10, "child2 rect height is invalid");
 
 // Point intersection
 ok(bounding.containsPoint(-1,-1) === false, "scene starts at 0,0");
@@ -167,7 +168,7 @@ ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child2.containsPoint(8,10) === true, "8,10 is contained in child2");
 ok(child2.containsPoint(-1,-1) === false, "-1,-1 is not contained in child2");
-*/
+
 sys.puts(JSON.stringify({
  total: pass+fail,
  fail: fail,
