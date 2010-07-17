@@ -92,12 +92,12 @@ var cancelledResult = traversal1.descend(function(node, walker) {
 });
 ok(cancelledResult.nodesWalked === 2, "when a walk is cancelled, stop immediately");
 
-/*
+
 // Node Event Feature
-carena.Node.addFeature("event", carena.features.event);
-var topNode = new carena.Node(),
-    midNode = new carena.Node(),
-    botNode = new carena.Node();
+var eventNodeFactory = carena.Design({}, [carena.feature.Node, carena.feature.Eventable]);
+var topNode = eventNodeFactory(),
+    midNode = eventNodeFactory(),
+    botNode = eventNodeFactory();
 
 topNode.add(midNode.add(botNode));
 
@@ -114,20 +114,19 @@ midNode.event.bind("test.event", function(ev, obj) {
 
 botNode.event.trigger("test.event");
 ok(eventCount === 3, "when an event is triggered it bubbles up the tree");
-
 eventCount = 0;
 midNode.event.unbind("test.*");
 botNode.event.trigger("test.event");
 ok(eventCount === 1, "unbind by namespace and wildcard");
 
 
-/*
 
+/*
 // Bounding boxen (no rotation)
-var bounding    = new carena.node(),
-    child1      = new carena.node(),
-    child2      = new carena.node(),
-    child1child = new carena.node();
+var bounding    = nodeFactory(),
+    child1      = nodeFactory(),
+    child2      = nodeFactory(),
+    child1child = nodeFactory();
 
 bounding.add(child1);
 bounding.add(child2);
@@ -168,8 +167,6 @@ ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child2.containsPoint(8,10) === true, "8,10 is contained in child2");
 ok(child2.containsPoint(-1,-1) === false, "-1,-1 is not contained in child2");
-
-
 */
 sys.puts(JSON.stringify({
  total: pass+fail,
