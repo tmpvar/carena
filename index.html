@@ -24,12 +24,13 @@
       <h2>Demos</h2>
       <canvas width="300" height="300" id="mouse-canvas"></canvas>
       <script type="text/javascript">
-        var canvas  = document.getElementById("mouse-canvas"),
-            context = canvas.getContext("2d"),
-            node    = carena.Build({}, [carena.feature.Node]),
+        var renderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("mouse-canvas")});
+            camera   = carena.Build({}, [carena.feature.Camera], { renderer: renderer});
+            node    = carena.Build({}, [carena.feature.Node, carena.feature.Eventable]),
             mouse   = {x:0, y:0},
             fps     = 1000/30;
-        context.fillStyle = "#000000";
+        renderer.context.fillStyle = "#000000";
+        camera.target = node;
 
         node.width=100;
         node.height=100;
@@ -37,22 +38,18 @@
         node.y = 100;
         node.color = "red";
         node.render = function(ms) {
-          context.fillStyle = node.color;
-          context.fillRect(node.x, node.y, node.width, node.height);
+          renderer.context.fillStyle = node.color;
+          renderer.context.fillRect(node.x, node.y, node.width, node.height);
         };
 
-        document.addEventListener("mousemove", function(ev) {
-          mouse.x = ev.clientX - (canvas.offsetLeft - window.pageXOffset);
-          mouse.y = ev.clientY - (canvas.offsetTop  - window.pageYOffset);
-          console.log(mouse.x + " - " + mouse.y);
-          // attempt to pick a node
-          if (node.containsPoint(mouse.x, mouse.y, true)) {
-            node.color="blue";
-          } else {
-            node.color="red";
-          }
+        node.event.bind("mouse.in", function(name, data) {
+          node.color="blue";
         });
         
+        node.event.bind("mouse.out", function(name, data) {
+          node.color="red";
+        });
+
         document.addEventListener("mousedown", function(ev) {
           if (node.containsPoint(mouse.x, mouse.y, true)) {
             node.color="green";
@@ -67,7 +64,7 @@
           }
         });
 
-        context.fillRect(0, 0, canvas.width, canvas.height);
+        renderer.context.fillRect(0, 0, renderer.canvas.width, renderer.canvas.height);
         
         setTimeout(function render() {
           node.render((new Date()).getTime());
