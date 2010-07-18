@@ -4,7 +4,7 @@
     <script type="text/javascript" src="lib/carena.js"></script>
   </head>
   <body>
-            <canvas width="400" height="400" id="draggable-window"></canvas>
+    <canvas width="400" height="400" id="draggable-window"></canvas>
     <script type="text/javascript">
       (function() {
         var wrenderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("draggable-window")});
@@ -39,10 +39,7 @@
             wbutton.y += data.value-data.oldValue;
           }
         });
-    
-    cwindow.event.bind("*", function() {
-    console.log(arguments[0]);
-    })
+
         wbutton.width=100;
         wbutton.height=50;
         wbutton.x = 100;
