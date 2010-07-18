@@ -2,75 +2,91 @@
   <head>
     <title>Carena</title>
     <script type="text/javascript" src="lib/carena.js"></script>
-    <script type="text/javascript">
-      var mapRecursive = function(node, fn) {
-        fn(node);
-        var i = 0, len = node.children.length;
-        for (i; i<len; i++) {
-          mapRecursive(node.children[i], fn);
-        }
-      };
-    </script>
   </head>
   <body>
-    <h1>Carena</h1>
-    <p>
-      lightweight Javascript 2d scene graph for use with canvas
-    </p>
-    <h2>License</h2>
-    <p>
-      MIT, see <a href="LICENSE.txt">LICENSE.txt</a>
-    </p>
-      <h2>Demos</h2>
-      <canvas width="300" height="300" id="mouse-canvas"></canvas>
-      <script type="text/javascript">
-        var renderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("mouse-canvas")});
-            camera   = carena.Build({}, [carena.feature.Camera], { renderer: renderer});
-            node    = carena.Build({}, [carena.feature.Node, carena.feature.Eventable, carena.feature.Draggable]),
-            mouse   = {x:0, y:0},
-            fps     = 1000/60;
-        camera.target = node;
+            <canvas width="400" height="400" id="draggable-window"></canvas>
+    <script type="text/javascript">
+      (function() {
+        var wrenderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("draggable-window")});
+            wcamera   = carena.Build({}, [carena.feature.Camera], { renderer: wrenderer});
+            cwindow  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable, carena.feature.Draggable]),
+            wbutton  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable]),
+            wmouse    = {x:0, y:0},
+            wfps      = 1000/60;
+        wcamera.target = cwindow;
+        cwindow.x=50;
+        cwindow.y=50;
+        cwindow.width = 200;
+        cwindow.height = 200;
+        cwindow.dirty = true;
 
-        node.width=100;
-        node.height=100;
-        node.x = 100;
-        node.y = 100;
-        node.color = "red";
-        node.render = function(ms) {
-          renderer.context.fillStyle = node.color;
-          renderer.context.fillRect(node.x, node.y, node.width, node.height);
+        cwindow.color = "white";
+        cwindow.render = function(ms) {
+          cwindow.dirty = false;
+          wrenderer.context.fillStyle = cwindow.color;
+          wrenderer.context.fillRect(cwindow.x, cwindow.y, cwindow.width, cwindow.height);
         };
 
-        node.event.bind("mouse.in", function(name, data) {
-          node.color="blue";
-        });
-        
-        node.event.bind("mouse.out", function(name, data) {
-          node.color="red";
-        });
+    // TODO: move this into a "relative positioned" feature or somesuch
 
-        node.event.bind("mouse.down", function(name, data) {
-          node.color="green";
-        });
-
-        node.event.bind("mouse.up", function(name, data) {
-          node.color="blue";
-        });
-
-        node.event.bind("drag.move", function(name, data) {
-          node.color="orange";
-        });
-
-        setTimeout(function render() {
-          if (node.dirty === true) {
-            renderer.context.fillStyle = "black";
-            renderer.context.fillRect(0, 0, renderer.canvas.width, renderer.canvas.height);
-            node.clean();
+        cwindow.event.bind("node.x", function(name, data) {
+          if (data.node === cwindow) {
+            wbutton.x += data.value-data.oldValue;
           }
+        });
+        cwindow.event.bind("node.y", function(name, data) {
+          if (data.node === cwindow) {
+            wbutton.y += data.value-data.oldValue;
+          }
+        });
+    
+    cwindow.event.bind("*", function() {
+    console.log(arguments[0]);
+    })
+        wbutton.width=100;
+        wbutton.height=50;
+        wbutton.x = 100;
+        wbutton.y = 100;
+        cwindow.add(wbutton)
+        wbutton.color = "darkgrey";
+        wbutton.render = function(ms) {
+          wbutton.dirty = false;
+          wrenderer.context.fillStyle = wbutton.color;
+          wrenderer.context.fillRect(wbutton.x, wbutton.y, wbutton.width, wbutton.height);
+          wrenderer.context.font = "12pt verdana";
+          wrenderer.context.fillStyle = "black";
+          wrenderer.context.fillText("Press Me!", (wbutton.width/2) + (wbutton.x-39), (wbutton.height/2) + (wbutton.y+5));
+        };
 
-          node.render((new Date()).getTime());
-          setTimeout(render, fps)
-        }, fps);
-      </script>
+        wbutton.event.bind("mouse.in", function(name, data) {
+          wbutton.color="lightgrey";
+          wbutton.dirty = true;
+        });
+
+        wbutton.event.bind("mouse.out", function(name, data) {
+          wbutton.color="darkgrey";
+          wbutton.dirty = true;
+        });
+
+        wbutton.event.bind("mouse.down", function(name, data) {
+          wbutton.color="orange";
+          wbutton.dirty = true;
+        });
+
+        wbutton.event.bind("mouse.up", function(name, data) {
+          wbutton.color="lightgrey";
+          wbutton.dirty = true;
+        });
+
+        setTimeout(function renderDraggableWindow() {
+          if (cwindow.dirty === true) {
+            wrenderer.context.fillStyle = "black";
+            wrenderer.context.fillRect(0, 0, wrenderer.canvas.width, wrenderer.canvas.height);
+          }
+          wcamera.render();
+          setTimeout(renderDraggableWindow, wfps)
+        }, wfps);
+      }());
+    </script>
   </body>
 </html>
