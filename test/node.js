@@ -36,6 +36,19 @@ ok(anExtendedNode.set === true, "Built factories should respect new features");
 ok(anExtendedNode.x === 0, "Built factories should still respect old features");
 
 // Node Mutation Events
+var events        = ['x', 'y', 'z', 'height', 'width'],
+    mutationTest  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable]),
+    mutationCount = 0;
+
+mutationTest.event.bind("node.*", function(name, data) {
+  mutationCount++;
+});
+
+for (var i=0; i<events.length; i++) {
+  mutationTest[events[i]] = 100;
+}
+// x2 because each operation marks the nodes dirty which emits another event
+ok(mutationCount === events.length*2, "Changing " + JSON.stringify(events) + " should result in mutation events");
 
 // Node Dirtyness
 var dirties = ['x', 'y', 'z', 'height', 'width'], dirtyTest = nodeFactory({});
@@ -47,7 +60,6 @@ for (var i=0; i<dirties.length; i++)
   ok(dirties[i] !== 5, "value needs to be set");
   ok(true === dirtyTest.dirty, "when setting " + dirties[i] + " the node should be dirty");
 }
-
 
 // Node Tree
 var parent = nodeFactory(), child = nodeFactory();
@@ -119,8 +131,16 @@ midNode.event.unbind("test.*");
 botNode.event.trigger("test.event");
 ok(eventCount === 1, "unbind by namespace and wildcard");
 
+eventCount = 0;
+var argumentTest = eventNodeFactory();
+argumentTest.event.bind("argument.test", function(name, data) {
+  if (name === "argument.test") {
+    eventCount++;
+  }
+});
 
-
+argumentTest.event.trigger("argument.test");
+ok(eventCount === 1, "the name of the event should be passed into the event handler");
 
 // Bounding boxen (no rotation)
 var bounding    = nodeFactory(),
