@@ -57,12 +57,10 @@
           node.color="blue";
         });
 
-node.event.bind("*", function(name) {
-  console.log(name);
-})
-        
         setTimeout(function render() {
-          renderer.context.fillStyle = "black";
+          if (node.dirty) {
+            renderer.context.fillStyle = "black";
+          }
           renderer.context.fillRect(0, 0, renderer.canvas.width, renderer.canvas.height);
           
           node.render((new Date()).getTime());
