@@ -62,11 +62,13 @@
         });
 
         setTimeout(function render() {
-          if (node.dirty) {
+          if (node.dirty === true) {
+            console.log("clearing..");
             renderer.context.fillStyle = "black";
+            renderer.context.fillRect(0, 0, renderer.canvas.width, renderer.canvas.height);
+            node.clean();
           }
-          renderer.context.fillRect(0, 0, renderer.canvas.width, renderer.canvas.height);
-          
+
           node.render((new Date()).getTime());
           setTimeout(render, fps)
         }, fps);
