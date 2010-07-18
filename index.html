@@ -57,6 +57,10 @@
           node.color="blue";
         });
 
+        node.event.bind("drag.move", function(name, data) {
+          node.color="orange";
+        });
+
         setTimeout(function render() {
           if (node.dirty) {
             renderer.context.fillStyle = "black";
