@@ -26,10 +26,9 @@
       <script type="text/javascript">
         var renderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("mouse-canvas")});
             camera   = carena.Build({}, [carena.feature.Camera], { renderer: renderer});
-            node    = carena.Build({}, [carena.feature.Node, carena.feature.Eventable]),
+            node    = carena.Build({}, [carena.feature.Node, carena.feature.Eventable, carena.feature.Draggable]),
             mouse   = {x:0, y:0},
             fps     = 1000/30;
-        renderer.context.fillStyle = "#000000";
         camera.target = node;
 
         node.width=100;
@@ -58,9 +57,14 @@
           node.color="blue";
         });
 
-        renderer.context.fillRect(0, 0, renderer.canvas.width, renderer.canvas.height);
+node.event.bind("*", function(name) {
+  console.log(name);
+})
         
         setTimeout(function render() {
+          renderer.context.fillStyle = "black";
+          renderer.context.fillRect(0, 0, renderer.canvas.width, renderer.canvas.height);
+          
           node.render((new Date()).getTime());
           setTimeout(render, fps)
         }, fps);
