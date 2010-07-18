@@ -15,214 +15,64 @@
   <body>
     <h1>Carena</h1>
     <p>
-      lightweight Javascript scene graph for use with canvas
+      lightweight Javascript 2d scene graph for use with canvas
     </p>
-    
     <h2>License</h2>
     <p>
       MIT, see <a href="LICENSE.txt">LICENSE.txt</a>
     </p>
       <h2>Demos</h2>
-      Since its fairly difficult to visualize a scene graph, these are all
-      renderings.
-      <h3>Simple rendering</h3>
-      <canvas id="simple" width="200" height="200"></canvas>
+      <canvas width="300" height="300" id="mouse-canvas"></canvas>
       <script type="text/javascript">
-        (function() {
-          var canvas = document.getElementById("simple");
-          var ctx = canvas.getContext("2d");
+        var canvas  = document.getElementById("mouse-canvas"),
+            context = canvas.getContext("2d"),
+            node    = carena.Build({}, [carena.feature.Node]),
+            mouse   = {x:0, y:0},
+            fps     = 1000/30;
+        context.fillStyle = "#000000";
 
-          // a single square
-          var scene = new carena.node();
-          scene.height = 50;
-          scene.width  = 50
+        node.width=100;
+        node.height=100;
+        node.x = 100;
+        node.y = 100;
+        node.color = "red";
+        node.render = function(ms) {
+          context.fillStyle = node.color;
+          context.fillRect(node.x, node.y, node.width, node.height);
+        };
 
-          scene.update = (function() {
-            var delta = 1;
-            return function(time) {  
-              scene.x+=delta;
-              scene.y+=delta;
-              if (scene.x+scene.width  > canvas.width || 
-                  scene.y+scene.height > canvas.height) 
-              {
-                delta = -1;
-              } else if (scene.x < 0 || scene.y < 0) {
-                delta = 1;
-              }
-            }          
-          })();
-
-          scene.render = function(time) {
-            ctx.fillStyle ="#FF6600";
-            ctx.fillRect(scene.x,scene.y,scene.width,scene.height)
-          };      
-          
-          
-          // render..
-          var ms = 0, interval = 16;
-          setInterval(function() {
-            ctx.fillStyle = "#000000";
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            
-            ms+=interval;
-
-            mapRecursive(scene, function(node) {
-              node.update(ms);
-            });
-
-            mapRecursive(scene, function(node) {
-              node.render(ms);
-            });
-          }, interval);
-            
-        })();
-      </script>
-      <h3>Basic Mouse picking</h3>
-      click on the square..<br />
-      <canvas id="mouse-pick" width="200" height="200"></canvas>
-      <script type="text/javascript">
-        (function() {
-          var canvas = document.getElementById("mouse-pick");
-          var ctx = canvas.getContext("2d"), pickedNode = null;
-          
-          var pickscene = new carena.node();
-          pickscene.x = 0;
-          pickscene.y = 0;
-          pickscene.width = canvas.width;
-          pickscene.height = canvas.height;
-
-          var pickable1 = new carena.node();
-          pickable1.height = 50;
-          pickable1.width  = 50;
-          pickable1.x = 10;
-          pickable1.y = 10;
-          pickable1.normalColor = pickable1.color = "red"
-          pickscene.add(pickable1);
-
-          pickable1.render = function(time) {
-            if (pickable1.color) {
-              ctx.fillStyle = this.color;
-              ctx.fillRect(pickable1.x,
-                           pickable1.y,
-                           pickable1.width,
-                           pickable1.height);
-            }
-          };
-
-          var pickable2 = new carena.node();
-          
-          pickable2.height = 50
-          pickable2.width  = 50;
-          pickable2.x = 20;
-          pickable2.y = 20;
-          pickable2.normalColor = pickable2.color = "green"
-          pickscene.add(pickable2);
-
-          pickable2.render = function(time) {
-            if (pickable2.color) {
-              ctx.fillStyle = this.color;
-              ctx.fillRect(pickable2.x,
-                           pickable2.y,
-                           pickable2.width,
-                           pickable2.height);
-            }
-          };
-
-
-          canvas.onmousedown = function(event) {
-            var x = event.pageX-canvas.offsetLeft, 
-                y = event.pageY-canvas.offsetTop;
-            if ((pickedNode = pickscene.getNodeAtPoint(x,y))) {
-              pickedNode.color = "blue";              
-            }
-          };
-          
-          document.onmouseup = function(event) {
-            if (pickedNode) {
-              pickedNode.color = pickedNode.normalColor;
-            }
-            pickedNode = null
-          };
-          
-          // render..
-          var ms = 0, interval = 30;
-          setTimeout(function renderer() {
-            ctx.fillStyle = "#000000";
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            ms+=interval;
-            mapRecursive(pickscene, function(node) {           
-              if (node.render) { node.render(ms); }
-            });
-            
-            setTimeout(renderer, interval);
-          }, interval);
-            
-        })();
-      </script>
-      <h3>Tracking mouse movement</h3>
-      <br />
-      <canvas id="gridscene" width="200" height="200"></canvas>
-      <script type="text/javascript">
-        (function() {
-          var canvas = document.getElementById("gridscene"),
-              ctx = canvas.getContext("2d"), pickedNode = null,
-              grid = [],
-              gridscene = new carena.node(),
-              size = 2,
-              peices = (canvas.width*canvas.height)/size;
-          window.gridsceneCarena = gridscene;
-          ctx.fillStyle = "#000000";
-          ctx.fillRect(0,0,canvas.width,canvas.height);
-          
-          function buildSquare(idx) {
-            var width = canvas.width/size,
-                square = new carena.node();
-
-            square.x      = idx%canvas.width;
-            square.y      = Math.floor(idx/canvas.width)*size;
-            square.width  = size;
-            square.height = size;
-            square.color  = "red";
-            gridscene.add(square);
+        document.addEventListener("mousemove", function(ev) {
+          mouse.x = ev.clientX - (canvas.offsetLeft - window.pageXOffset);
+          mouse.y = ev.clientY - (canvas.offsetTop  - window.pageYOffset);
+          console.log(mouse.x + " - " + mouse.y);
+          // attempt to pick a node
+          if (node.containsPoint(mouse.x, mouse.y, true)) {
+            node.color="blue";
+          } else {
+            node.color="red";
           }
-          
-          for (var i=0; i<peices; i+=size) {
-            buildSquare(i);
+        });
+        
+        document.addEventListener("mousedown", function(ev) {
+          if (node.containsPoint(mouse.x, mouse.y, true)) {
+            node.color="green";
+          } else {
+            node.color="blue";
           }
+        });
 
-          document.onmousemove = function(event) {
-            var x = event.pageX-canvas.offsetLeft,
-                y = event.pageY-canvas.offsetTop;
-            gridscene.walk(function(node) {
-              if (node.containsPoint(x,y)) {
-                node.dirty = true;
-              }
-            });
-          };
+        document.addEventListener("mouseup", function(ev) {
+          if (node.containsPoint(mouse.x, mouse.y, true)) {
+            node.color="blue";
+          }
+        });
 
-          // render
-          var ms = 0, interval = 16;
-          gridscene.bounds;
-          setInterval(function renderer() {
-            gridscene.walk(function(node) {
-              if (node.dirty) {
-                ctx.fillStyle = node.color;
-                ctx.fillRect(node.x,
-                             node.y,
-                             node.width,
-                             node.height);
-                node.clean();
-              } else {
-                return false;
-              }
-            });
-            ms+=interval;
-          }, interval);
-
-        })();
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        
+        setTimeout(function render() {
+          node.render((new Date()).getTime());
+          setTimeout(render, fps)
+        }, fps);
       </script>
-    <p>
-      more coming soon..
-    </p>
   </body>
 </html>
