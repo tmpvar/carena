@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <title>Carena</title>
+    <script type="text/javascript" src="../lib/carena.js"></script>
+  </head>
+  <body>
+    <canvas width="400" height="400" id="draggable-window"></canvas>
+    <script type="text/javascript">
+      (function() {
+        var wrenderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("draggable-window")});
+            wcamera   = carena.Build({}, [carena.feature.Camera], { renderer: wrenderer});
+            cwindow  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable, carena.feature.Draggable]),
+            wbutton  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable]),
+            wmouse    = {x:0, y:0},
+            wfps      = 1000/60;
+
+        wcamera.target = cwindow;
+        cwindow.x=50;
+        cwindow.y=50;
+        cwindow.width = 200;
+        cwindow.height = 200;
+        cwindow.dirty = true;
+
+        cwindow.color = "white";
+        cwindow.render = function(ms) {
+          cwindow.dirty = false;
+          wrenderer.context.fillStyle = cwindow.color;
+          wrenderer.context.fillRect(cwindow.x, cwindow.y, cwindow.width, cwindow.height);
+        };
+
+    // TODO: move this into a "relative positioned" feature or somesuch
+
+        cwindow.event.bind("node.x", function(name, data) {
+          if (data.node === cwindow) {
+            wbutton.x += data.value-data.oldValue;
+          }
+        });
+        cwindow.event.bind("node.y", function(name, data) {
+          if (data.node === cwindow) {
+            wbutton.y += data.value-data.oldValue;
+          }
+        });
+
+        wbutton.width=100;
+        wbutton.height=50;
+        wbutton.x = 100;
+        wbutton.y = 100;
+        cwindow.add(wbutton)
+        wbutton.color = "darkgrey";
+        wbutton.render = function(ms) {
+          wbutton.dirty = false;
+          wrenderer.context.fillStyle = wbutton.color;
+          wrenderer.context.fillRect(wbutton.x, wbutton.y, wbutton.width, wbutton.height);
+          wrenderer.context.font = "12pt verdana";
+          wrenderer.context.fillStyle = "black";
+          wrenderer.context.fillText("Press Me!", (wbutton.width/2) + (wbutton.x-39), (wbutton.height/2) + (wbutton.y+5));
+        };
+
+        wbutton.event.bind("mouse.in", function(name, data) {
+          wbutton.color="lightgrey";
+          wbutton.dirty = true;
+        });
+
+        wbutton.event.bind("mouse.out", function(name, data) {
+          wbutton.color="darkgrey";
+          wbutton.dirty = true;
+        });
+
+        wbutton.event.bind("mouse.down", function(name, data) {
+          wbutton.color="orange";
+          wbutton.dirty = true;
+        });
+
+        wbutton.event.bind("mouse.up", function(name, data) {
+          wbutton.color="lightgrey";
+          wbutton.dirty = true;
+        });
+
+        setTimeout(function renderDraggableWindow() {
+          if (cwindow.dirty === true) {
+            wrenderer.context.fillStyle = "black";
+            wrenderer.context.fillRect(0, 0, wrenderer.canvas.width, wrenderer.canvas.height);
+          }
+          wcamera.render();
+          setTimeout(renderDraggableWindow, wfps)
+        }, wfps);
+      }());
+    </script>
+  </body>
+</html>
