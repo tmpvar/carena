@@ -1,6 +1,6 @@
 {
   "todo" : [
-    "css parser"
+    "css parser",
     "add textual fields aka steal from tmpvar/cider",
     "implement drop feature",
     "implement drop filtering",
