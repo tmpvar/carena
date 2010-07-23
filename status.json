@@ -1,14 +1,17 @@
 {
   "todo" : [
-    "css parser",
-    "add textual fields aka steal from tmpvar/cider",
-    "implement drop feature",
-    "implement drop filtering",
-    "build a useful sample (contacts)",
+    "figure out how dropables work, what event they hook onto, and where.",
+    "implement Dropables",
+    "implement DrogTarget",
     "simple css renderer to provide basic styles to nodes",
     "use the dom to generate the carena tree"
   ],
   "future" : [
+    "css parser",
+    "add textual fields aka steal from tmpvar/cider",
+    "implement drop feature",
+    "implement drop filtering",
+    "build a useful sample (contacts)"
   ],
   "done" : [
     "allow nodes to store a position in 2d (and z coord for render order)",
