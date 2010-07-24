@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>Carena</title>
+    <script type="text/javascript" src="../lib/carena.js"></script>
+  </head>
+  <body>
+    <canvas width="400" height="400" id="draggable-window"></canvas>
+    <script type="text/javascript">
+      (function() {
+        var renderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("draggable-window")});
+            camera   = carena.Build({}, [carena.feature.Camera], { renderer: renderer});
+            scene    = carena.Build({}, [carena.feature.Node])
+            DropNode  = carena.Design({}, [carena.feature.Node, 
+                                           carena.feature.Eventable, 
+                                           carena.feature.Draggable]),
+            fps      = 1000/60;
+
+        camera.target = scene;
+
+        setTimeout(function render() {
+          camera.render();
+          setTimeout(render, fps)
+        }, fps);
+      }());
+    </script>
+  </body>
+</html>

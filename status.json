@@ -3,6 +3,7 @@
     "figure out how dropables work, what event they hook onto, and where.",
     "implement Dropables",
     "implement DrogTarget",
+    "implement update loop, similar to render",
     "simple css renderer to provide basic styles to nodes",
     "use the dom to generate the carena tree"
   ],
