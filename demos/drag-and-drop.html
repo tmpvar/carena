@@ -10,13 +10,22 @@
         /*
           we are building something like
           
-          []<| --- [ scene ]
-                  /         \
-               [ node ]      [ drop ]
-              /        \
-         [ drag ]    [ drag ]
+          [ camera ]<| --- [ scene ]
+                           /         \
+                      [ node ]      [ drop ]
+                     /        \
+                  [ drag ]    [ drag ]
 
           nodes from the left branch can be dropped into the right
+          
+          Here is how this works:
+            * camera binds to '*' events, and re-triggers them internally
+            
+            TODO: determine where the camera's children come into play
+                  idealy we won't bubble all the way up to the root of the tree,
+                  but instead handle it in the camera, somehow.
+            
+          
         */
 
         var feature  = carena.feature,
@@ -26,7 +35,7 @@
             DropNode = carena.Design({}, [feature.Node, feature.Eventable, feature.Draggable]),
             fps      = 1000/60;
 
-        // TODO: move into core
+        // TODO: move into core, clean up
         feature.DropTarget = function(obj, features, options) {
           
         };
