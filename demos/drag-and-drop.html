@@ -9,45 +9,55 @@
       (function() {
         /*
           we are building something like
-          
+
           [ camera ]<| --- [ scene ]
-                           /         \
-                      [ node ]      [ drop ]
-                     /        \
-                  [ drag ]    [ drag ]
+           /              /         \
+  [ drop manager ]   [ node ]       [ drop ]
+                    /        \
+              [ drag1 ]     [ drag2 ]
 
           nodes from the left branch can be dropped into the right
-          
+
           Here is how this works:
             * camera binds to '*' events, and re-triggers them internally
-            
+
             TODO: determine where the camera's children come into play
                   idealy we won't bubble all the way up to the root of the tree,
                   but instead handle it in the camera, somehow.
-            
-          
         */
-
         var feature  = carena.feature,
-            renderer = carena.Build({}, [feature.Renderer], {canvas: document.getElementById("drag-and-drop")});
-            camera   = carena.Build({}, [feature.Camera], { renderer: renderer});
-            scene    = carena.Build({}, [feature.Node])
-            DropNode = carena.Design({}, [feature.Node, feature.Eventable, feature.Draggable]),
+            renderer = carena.Build({}, [feature.Renderer], {canvas: document.getElementById("drag-and-drop")}),
+            camera   = carena.Build({}, [feature.Camera, feature.DropManager], { renderer: renderer}),
+            scene    = carena.Build({}, [feature.Node, feature.Eventable]),
+            node     = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
+            drag1    = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
+            drag2    = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
+            drop     = carena.Build({}, [feature.Node, feature.Draggable, feature.DropTarget]),
             fps      = 1000/60;
 
-        // TODO: move into core, clean up
-        feature.DropTarget = function(obj, features, options) {
-          
-        };
-        
         camera.target = scene;
-        
-        var node  = carena.Build({}, [feature.Node]),
-            drag1 = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
-            drag2 = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
-            drop  = carena.Build({}, [feature.Node, feature.Draggable, feature.DropTarget])
 
-        scene.add(node.add(drag1).add(drag2));
+        drag1.color = "green";
+        drag1.width = 100;
+        drag1.height = 50;
+        drag1.x = 10;
+        drag1.y = 10;
+
+        drag2.color = "blue";
+        drag2.width  = 100;
+        drag2.height = 50;
+        drag2.x = 10;
+        drag2.y = 70;
+
+        drop.color = "red";
+        drop.width  = 120;
+        drop.height = 200;
+        drop.x = 270;
+        drop.y = 10;
+
+        node.add(drag1);
+        node.add(drag2);
+        scene.add(node);
         scene.add(drop);
 
         setTimeout(function render() {
