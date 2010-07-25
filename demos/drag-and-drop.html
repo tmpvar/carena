@@ -26,14 +26,20 @@
                   but instead handle it in the camera, somehow.
         */
         var feature  = carena.feature,
-            renderer = carena.Build({}, [feature.Renderer], {canvas: document.getElementById("drag-and-drop")}),
-            camera   = carena.Build({}, [feature.Camera, feature.DropManager], { renderer: renderer}),
+            renderer = carena.Build({}, [feature.Renderer], {
+							canvas: document.getElementById("drag-and-drop")
+						}),
+					  camera   = carena.Build({},
+              [feature.Camera, feature.DropManager],
+              { renderer: renderer}
+						),
             scene    = carena.Build({}, [feature.Node, feature.Eventable]),
-            node     = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
-            drag1    = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
-            drag2    = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
+            node     = carena.Build({}, [feature.Node, feature.Draggable]),
+            drag1    = carena.Build({}, [feature.Node, feature.Draggable]),
+            drag2    = carena.Build({}, [feature.Node, feature.Draggable]),
             drop     = carena.Build({}, [feature.Node, feature.DropTarget]),
             fps      = 1000/60;
+
 window.scene = scene;
         camera.target = scene;
 scene.event.bind("*", function(name) { console.log(name); });
