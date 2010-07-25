@@ -22,8 +22,8 @@
             * camera binds to '*' events, and re-triggers them internally
 
             TODO: determine where the camera's children come into play
-                  idealy we won't bubble all the way up to the root of the tree,
-                  but instead handle it in the camera, somehow.
+                  idealy we won't bubble all the way up to the root of thei
+									tree but instead handle it in the camera, somehow.
         */
         var feature  = carena.feature,
             renderer = carena.Build({}, [feature.Renderer], {
@@ -33,16 +33,25 @@
               [feature.Camera, feature.DropManager],
               { renderer: renderer}
 						),
-            scene    = carena.Build({}, [feature.Node, feature.Eventable]),
-            node     = carena.Build({}, [feature.Node, feature.Draggable]),
-            drag1    = carena.Build({}, [feature.Node, feature.Draggable]),
-            drag2    = carena.Build({}, [feature.Node, feature.Draggable]),
-            drop     = carena.Build({}, [feature.Node, feature.DropTarget]),
+            BaseNode = carena.Design({}, [feature.Node, feature.Draggable]);
+            scene    = BaseNode(),
+            node     = BaseNode({}, [feature.DropTarget]),
+            drag1    = BaseNode({}, [feature.RelativeToParent]),
+            drag2    = BaseNode({}, [feature.RelativeToParent]),
+            drop     = BaseNode({}, [feature.DropTarget]),
             fps      = 1000/60;
 
 window.scene = scene;
         camera.target = scene;
 scene.event.bind("*", function(name) { console.log(name); });
+
+
+				node.color = "orange";
+        node.width = 120;
+        node.height = 200;
+        node.x = 0;
+        node.y = 0;
+
         drag1.color = "green";
         drag1.width = 100;
         drag1.height = 50;
