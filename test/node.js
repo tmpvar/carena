@@ -44,11 +44,16 @@ mutationTest.event.bind("node.*", function(name, data) {
   mutationCount++;
 });
 
+mutationTest.event.bind("node.dirty", function(name) {
+  mutationCount--;
+});
+
 for (var i=0; i<events.length; i++) {
   mutationTest[events[i]] = 100;
 }
+
 // x2 because each operation marks the nodes dirty which emits another event
-ok(mutationCount === events.length*2, "Changing " + JSON.stringify(events) + " should result in mutation events");
+ok(mutationCount === events.length, "Changing " + JSON.stringify(events) + " should result in mutation events");
 
 // Node Dirtyness
 var dirties = ['x', 'y', 'z', 'height', 'width'], dirtyTest = nodeFactory({});
