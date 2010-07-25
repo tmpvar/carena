@@ -1,25 +1,25 @@
 {
   "todo" : [
-    "figure out how dropables work, what event they hook onto, and where.",
-    "implement Dropables",
-    "implement DrogTarget",
     "implement update loop, similar to render",
     "simple css renderer to provide basic styles to nodes",
-    "use the dom to generate the carena tree"
   ],
   "future" : [
     "css parser",
     "add textual fields aka steal from tmpvar/cider",
     "implement drop feature",
     "implement drop filtering",
-    "build a useful sample (contacts)"
+    "build a useful sample (contacts)",
+    "use the dom to generate the carena tree"
   ],
   "done" : [
     "allow nodes to store a position in 2d (and z coord for render order)",
+    "figure out how dropables work, what event they hook onto, and where.",
+    "implement DrogTarget",
     "build out a <i>very</i> minimal tree structure",
     "write unit tests to check that this tree will function as expected"
   ],
   "nope" : [
+    "implement Dropables"
   ]
 }
 
