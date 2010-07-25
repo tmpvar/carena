@@ -34,8 +34,9 @@
             drag2    = carena.Build({}, [feature.Node, feature.Draggable, feature.Droppable]),
             drop     = carena.Build({}, [feature.Node, feature.DropTarget]),
             fps      = 1000/60;
-
+window.scene = scene;
         camera.target = scene;
+scene.event.bind("*", function(name) { console.log(name); });
         drag1.color = "green";
         drag1.width = 100;
         drag1.height = 50;
