@@ -10,7 +10,7 @@
         var wrenderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("draggable-window")});
             wcamera   = carena.Build({}, [carena.feature.Camera], { renderer: wrenderer});
             cwindow  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable, carena.feature.Draggable]),
-            wbutton  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable]),
+            wbutton  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable, carena.feature.RelativeToParent]),
             wmouse    = {x:0, y:0},
             wfps      = 1000/60;
 
@@ -19,27 +19,7 @@
         cwindow.y=50;
         cwindow.width = 200;
         cwindow.height = 200;
-        cwindow.dirty = true;
-
         cwindow.color = "white";
-        cwindow.render = function(ms) {
-          cwindow.dirty = false;
-          wrenderer.context.fillStyle = cwindow.color;
-          wrenderer.context.fillRect(cwindow.x, cwindow.y, cwindow.width, cwindow.height);
-        };
-
-    // TODO: move this into a "relative positioned" feature or somesuch
-
-        cwindow.event.bind("node.x", function(name, data) {
-          if (data.node === cwindow) {
-            wbutton.x += data.value-data.oldValue;
-          }
-        });
-        cwindow.event.bind("node.y", function(name, data) {
-          if (data.node === cwindow) {
-            wbutton.y += data.value-data.oldValue;
-          }
-        });
 
         wbutton.width=100;
         wbutton.height=50;
@@ -77,10 +57,6 @@
         });
 
         setTimeout(function renderDraggableWindow() {
-          if (cwindow.dirty === true) {
-            wrenderer.context.fillStyle = "black";
-            wrenderer.context.fillRect(0, 0, wrenderer.canvas.width, wrenderer.canvas.height);
-          }
           wcamera.render();
           setTimeout(renderDraggableWindow, wfps)
         }, wfps);
