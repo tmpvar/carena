@@ -1,7 +1,7 @@
 {
   "todo" : [
     "implement update loop, similar to render",
-    "simple css renderer to provide basic styles to nodes",
+    "simple css renderer to provide basic styles to nodes"
   ],
   "future" : [
     "css parser",
