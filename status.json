@@ -1,5 +1,6 @@
 {
   "todo" : [
+    "port the clear rects and overlap cache to carena",
     "implement update loop, similar to render",
     "simple css renderer to provide basic styles to nodes"
   ],
