@@ -95,14 +95,14 @@ traversal1.add(traversal3);
 var allResult = traversal1.descend();
 ok(allResult.nodesWalked === 4, "walked " + allResult.nodesWalked + " of 4 nodes");
 
-var falseResult = traversal1.descend(function(node) { 
+var falseResult = traversal1.descend(function(node) {
   if (node === traversal2) {
     return false;
   }
 });
 ok(falseResult.nodesWalked === 3, "when a walk callback returns false, stop walking that branch");
 
-var cancelledResult = traversal1.descend(function(node, walker) { 
+var cancelledResult = traversal1.descend(function(node, walker) {
   if (node === traversal2) {
     walker.stop();
   }
@@ -193,6 +193,36 @@ ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child2.containsPoint(8,10) === true, "8,10 is contained in child2");
 ok(child2.containsPoint(-1,-1) === false, "-1,-1 is not contained in child2");
+
+// Grandparent relative
+var RelativeNode = carena.Design({}, [
+  carena.feature.Node,
+  carena.feature.Eventable,
+  carena.feature.RelativeToParent
+]);
+var a = RelativeNode({x:0,y:0}),
+    b = RelativeNode({x:0,y:0}),
+    c = RelativeNode({x:0,y:0}),
+    d = RelativeNode({x:0,y:0});
+
+a.add(b.add(c.add(d)));
+
+a.x = 100;
+ok(a.x === d.x && a.x === 100, "a.x is 100, so is d.x");
+
+a.x = 50;
+ok(a.x === 50 && d.x === 50, "a.x and d.x equal 50");
+
+a.y = 123;
+
+ok(d.x === 50, "Relative to parent nodes should move when parents move");
+ok(d.y === 123, "Relative to parent nodes should move when parents move");
+
+d.x = 10;
+ok(d.x === 10, "Setting a child's x should still work");
+a.x = 500;
+ok(d.x === 460, "(500-50) + 10 == d.x, aka 460");
+
 
 sys.puts(JSON.stringify({
  total: pass+fail,
