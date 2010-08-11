@@ -52,6 +52,17 @@ for (var i=0; i<events.length; i++) {
   mutationTest[events[i]] = 100;
 }
 
+// Detect duplicate bound events
+var doubleBound = carena.Build({}, [carena.feature.Eventable]),
+    dbFnCount = 0,
+    dbFn = function() { dbFnCount++; };
+doubleBound.event.bind("test", dbFn);
+doubleBound.event.bind("test", dbFn);
+
+doubleBound.event.trigger("test");
+ok(dbFnCount === 1, "Double binds are not allowed");
+
+
 // x2 because each operation marks the nodes dirty which emits another event
 ok(mutationCount === events.length, "Changing " + JSON.stringify(events) + " should result in mutation events");
 
@@ -205,7 +216,7 @@ var a = RelativeNode({x:0,y:0}),
     c = RelativeNode({x:0,y:0}),
     d = RelativeNode({x:0,y:0});
 
-a.add(b.add(c.add(d)));
+a.add(b.add(c).add(d));
 
 a.x = 100;
 ok(a.x === d.x && a.x === 100, "a.x is 100, so is d.x");
@@ -220,8 +231,8 @@ ok(d.y === 123, "Relative to parent nodes should move when parents move");
 
 d.x = 10;
 ok(d.x === 10, "Setting a child's x should still work");
-a.x = 500;
-ok(d.x === 460, "(500-50) + 10 == d.x, aka 460");
+b.x = 500;
+ok(d.x === 460, "(500-50) + 10 == d.x, aka 460 not " + d.x);
 
 
 sys.puts(JSON.stringify({
