@@ -66,13 +66,83 @@
     </p>
     <h3>Node</h3>
     <p>
-      The Node feature provides basic functionality including:
-      <ul>
-        <li>positioning (x,y,z)</li>
-        <li>dimensions (height, width)</li>
-        <li>bounding box (bounds.x, bounds.y)</li>
-        <li>tree navigation (walk, ascend, descend, parent, children, child)</li>
-        <li>tree management (add, remove)</li>
+      The Node is the carena's core feature, which allows nodes to positioned, styled, and organized into trees.
+    </p>
+    <h4>Getters / Setters</h4>
+    <p>
+        <ul>
+          <li><strong>node.x</strong>
+            <p>
+              on <strong>read</strong>: returns the current value<br />
+              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.x" event is triggered with data.previous set to the old x value, and node.current set to the current value.
+            </p>
+          </li>
+          <li><strong>node.y</strong>
+            <p>
+              on <strong>read</strong>: returns the current value<br />
+              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.y" event is triggered with data.previous set to the old y value, and node.current set to the current value.
+            </p>
+          </li>
+          <li><strong>node.z</strong>
+            <p>
+              on <strong>read</strong>: returns the current value<br />
+              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.z" event is triggered with data.previous set to the old z value, and node.current set to the current value.
+            </p>          
+          </li>
+          <li><strong>node.width</strong>
+            <p>
+              on <strong>read</strong>: returns the current value<br />
+              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.width" event is triggered with data.previous set to the old width, and node.current set to the current value.
+            </p>
+          </li>
+          <li><strong>node.height</strong>
+            <p>
+              on <strong>read</strong>: returns the current value<br />
+              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.height" event is triggered with data.previous set to the old height, and node.next set to the current value.
+            </p>
+          </li>
+          <li><strong>node.children (read only)</strong>
+            <p>
+              returns the children of the node (array);
+            </p>
+          <li><strong>node.dirty</strong>
+            <p>
+              Dirtyness is a way for node's caches to be re-calculated.  For instance, if a node hasn't changed since the last render then there is no reason to re-render the node, as it would simply waste cycles.<br /><br />
+              on <strong>read</strong>: returns true or false<br />
+              on <strong>write</strong>: if set to true, this node and all parent nodes will be marked dirty.
+            </p>
+          </li>
+          <li><strong>node.parent</strong>
+            <p>
+              on <strong>read</strong>: return the current node's parent or null<br />
+              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.parent" event is triggered with 
+            </p>
+          </li>
+          <li><strong>node.bounds (read only)</strong>
+            <p>
+              If the node is dirty, the bounding box of this node will be computed by descending into it's children (recursively) to find the biggest bounding rectangle that fits all of its children.
+              <br /><br />
+              <strong>NOTE:</strong> at the time of this writing, re-calculating the bounds also marks the node's dirtyness as false.
+            </p>
+          </li>
+        </ul>
+        
+    </p>
+    <h3>Methods</h3>
+      <p>
+        <li>add</li>
+        <li>remove</li>
+        <li>walk</li>
+        <li>ascend</li>
+        <li>descend</li>
+        <li>parent</li>
+        <li>children</li>
+        <li>child</li>
+        <li>containsPoint</li>
+        <li>clean</li>
+        <li>unshift</li>
+        <li>childIndex</li>
+        <li>nodesByPoint</li>
       </ul>
     </p>
     
@@ -132,6 +202,9 @@
 
     <h3>Renderer</h3>
     <p>
+        <ul>
+          <li>
+        </ul>
     </p>
 
     <h3>Camera</h3>
@@ -153,7 +226,7 @@
     <h3>RelativeToParent</h3>
     <p>
       
-      This feature moves a node whenever it's parent node moves. Re-parenting a node will unbind from the current parent and bind to the new parent. How child reacts to the parent's movement is controlled by the positionChange method.
+      This feature moves a node whenever it's parent node moves. Re-parenting a node will unbind from the current parent and bind to the new parent. How the child reacts to the parent's movement is controlled by the positionChange method.
       <ul>
         <li>
           <strong>node.positionChanged(name, data)</strong>
