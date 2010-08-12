@@ -2,9 +2,130 @@
   <head>
     <title>Carena</title>
     <script type="text/javascript" src="lib/carena.js"></script>
+    <style>
+      body {
+        font-family: helvetica, arial;
+        font-size: 0.85em;
+        width: 35em;
+        margin: 0 auto;
+      }
+    </style>
   </head>
   <body>
-    <h1>Demos</h1>
+    <h1>Carena</h1>
+    <p>
+      A lightweight scene-tree for use with html5's canvas.
+    </p>
+    <h2>Core Features</h2>
+    <p>
+      Carena's core feature-set is currently very minimal, providing only a small set methods:
+      <ul>
+        <li><strong>carena.applyProperties(obj, props)</strong>
+          <p>
+            All properties from the props argument are copied onto the obj, allowing for the copying of enumerable getters/setters.
+          </p>
+        </li>
+        <li><strong>carena.Erect(structure, features)</strong>
+          <p>
+            Builds a tree with a common set of features. (Still under r&amp;d)
+          </p>
+        </li>
+        <li><strong>carena.Build(obj, features, options)</strong>
+          <p>
+            Builds an object to your specifications. <strong>obj</strong> is your original object that you want to build on top of.  <strong>features</strong> is an array of carena enabled features (for a list see the Dynamic Features section below). <strong>options</strong> is simply an object that gets passed to every feature that is used to build your new object.
+          </p>
+        </li>
+        <li><strong>carena.Design(obj, features, options)</strong>
+          <p>
+            Use carena.Design for building a factory that builds nodes that share the same features.  The signature is exactly the same as <strong>carena.Build</strong>, except for the fact that it returns a function that also has the same signature, and behaves exactly like <strong>carena.Build</strong>.
+          </p>
+        </li>
+        <li><strong>carena.commonAncestor(obj1, obj2)</strong> (Will move soon!)
+          <p>
+            This method finds the common ancestor between two nodes. Example
+<pre>
+   [a]
+   / \
+[b]  [c]
+    /   \
+  [d]   [e]
+</pre>
+            The common ancestor of <strong>d</strong> and <strong>e</strong> in the previous example is <strong>c</strong>.
+          </p>
+        </li>
+      </ul>
+    </p>
+
+    <h2>Dynamic Features</h2>
+    <p>
+      Dynamic features are used to augment the features of an existing object.  There are two ways to apply the following features to your objects.<br />
+      <br />
+      1. Utilize the carena.Build() method; this is generally done by calling carena.build(obj, [carena.feature.{feature1}, carena.feature.{feature2}]).  This will return you your original `obj` augmented with feature1 and feature 2<br />
+      <br />
+      2. If you want to add a single feature to an object, you can do so easily by: carena.feature.feature1(obj).  `obj` will be augmented with methods and properties from the feature and returned to you.
+    </p>
+    <h3>Node</h3>
+    <p>
+      The Node feature provides basic functionality including:
+      <ul>
+        <li>positioning (x,y,z)</li>
+        <li>dimensions (height, width)</li>
+        <li>bounding box (bounds.x, bounds.y)</li>
+        <li>tree navigation (walk, ascend, descend, parent, children, child)</li>
+        <li>tree management (add, remove)</li>
+      </ul>
+    </p>
+    
+    <h3>Eventable</h3>
+    <p>
+      The Eventable feature provides a means for objects to communicate via events.<br />
+      
+      Eventable is attached to objects by way of a namespace property "event".  All methods useful to event capabilities are nested under the event namespace.
+    </p>
+    <p>
+      These capabilities include:
+      <ul>
+        <li>bind</li>
+        <li>unbind</li>
+        <li>trigger</li>
+      </ul>
+    </p>
+    <p>
+      Many events are namespaced for organization's sake.  Examples of namespaced events are "node.x", "node.parent", "drag.start", etc..<br />
+      <br />
+      When binding or triggering events, you may trigger by the entire name or by namespace. For example, If you bound to "node.*" the following events would be caught:
+      <ul>
+        <li>node.x</li>
+        <li>node.y</li>
+        <li>node.arbitrary.namespace.event</li>
+      </ul>
+    </p>
+
+    <h3>Renderer</h3>
+    <p>
+    </p>
+
+    <h3>Camera</h3>
+    <p>
+    </p>
+
+    <h3>Draggable</h3>
+    <p>
+    </p>
+
+    <h3>DropTarget</h3>
+    <p>
+    </p>
+
+    <h3>DropManager</h3>
+    <p>
+    </p>
+
+    <h3>RelativeToParent</h3>
+    <p>
+    </p>
+
+    <h2>Demos</h2>
     <ul>
         <li><a href="demos/window-with-button.html">Draggable window with a button</a></li>
         <li><a href="demos/drag-and-drop.html">Draggable and drop between containers</a></li>
