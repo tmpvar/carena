@@ -9,14 +9,14 @@
         width: 40em;
         margin: 0 auto;
       }
-      
+
       pre.data {
         border:1px solid orange;
         background: black;
         color: lightgreen;
-        
+
       }
-      
+
       em {
         font-size:0.86em;
       }
@@ -118,7 +118,7 @@
   current  : `current node.z`,
   previous : `original node.z`
 }</pre>
-            </p>          
+            </p>
           </li>
           <li><em>node</em>.<strong>width</strong>
             <p>
@@ -152,7 +152,7 @@
             <p>
               Dirtyness is a way for node's caches to be re-calculated.  For instance, if a node hasn't changed since the last render then there is no reason to re-render the node, as it would simply waste cycles.<br /><br />
               on <em>read</em>: returns true or false<br />
-              
+
               on <em>write</em>: a "node.dirty" event will be triggered:
               <pre>
 {
@@ -211,31 +211,98 @@
             <strong>returns</strong> <em>node</em>
             </p>
           </li>
-          <li>walk</li>
-          <li>ascend</li>
-          <li>descend</li>
-          <li>parent</li>
-          <li>children</li>
-          <li>child</li>
-          <li>containsPoint</li>
-          <li>clean</li>
-          <li>unshift</li>
-          <li>childIndex</li>
-          <li>nodesByPoint</li>
+          <li><em>node</em>.<strong>walk</strong>(<em>map</em>, <em>callback</em> [, <em>depth</em>])</strong>
+            <p>
+              Generic tree walking utility. <em>map</em> resolve nodes that need to be traversed, every new node is passed as a parameter into <em>callback</em> along with a <em>walker</em> object. The <em>walker</em> object tracks the depth and will stop map from going past the level specified (if any).<br /><br />
+              <em>map</em>(<em>obj</em>, <em>fn</em>)  provides a generic means for iterating through object properties. The <em>map</em> function takes two parameters, an object and the callback passed into walk.<br /><br />
+              <em>callback</em>(<em>obj</em>, <em>walker</em>) called on every node that map encounters. <em>walker</em> is an object that allows you to cancel the entire traversal by calling <em>walker</em>.<strong>stop()</strong>.  Returning <em>false</em> from the <em>callback</em> will cancel the traversal down the current branch.<br /><br />
+              <em>depth</em> Optional; if specified it forces map to only recurse <em>depth</em> times.  If not specified, <strong>walk</strong> will recurse until all <em>map</em>s on the traversed nodes are exhausted.<br /><br />
+              <strong>Example:</strong>
+<pre>
+function ascend(obj, fn, depth) {
+  return obj.walk(function(node, callback) {
+    if (node && node.parent) {
+      callback(node.parent);
+    }
+  },fn, depth);
+};</pre>
+              This will traverse up the tree from obj, to the root calling <em>fn</em> every time it encounters a new node.<br /><br />
+              <strong>return</strong> <em>walker</em>
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>ascend</strong>(<em>fn</em>, <em>depth</em>)
+            <p>
+              Uses <em>node</em>.<strong>walk</strong> to walk up the tree by using <em>node</em>.<strong>parent</strong> while passing nodes it encounters back to <em>fn</em>.<br /><br />
+
+              <strong>return</strong> walker (see: <em>node</em>.<strong>walk</strong>)
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>decend</strong>(<em>fn</em>, <em>depth</em>)
+            <p>
+              Uses <em>node</em>.<strong>walk</strong> to walk down the tree by using <em>node</em>.<strong>children</strong> while passing nodes it encounters back to <em>fn</em>.<br /><br />
+
+              <strong>return</strong> walker (see: <em>node</em>.<strong>walk</strong>)
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>child</strong>(<em>idx</em>)
+            <p>
+              <strong>return</strong> child at idx, or <em>null</em>
+
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>containsPoint</strong>(<em>x</em>, <em>y</em> [, <em>bounding</em>])
+            <p>
+              Using <em>node</em>.<strong>bounds</strong> (if <em>bounding</em> is <em>true</em>) or <em>node</em>.<strong>x</strong> and <em>node</em>.<strong>y</strong> to calculate whether a point lies in the area occupied by <em>node</em>.
+              <br /><br />
+              <strong>return</strong> <em>true</em> if found or <em>false</em> otherwise
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>clean</strong>()
+            <p>
+              Marks <em>node</em>.<strong>dirty</strong> false.<br />
+              <br />
+              <strong>return</strong> <em>node</em>
+            </p>
+          <li>
+            <em>node</em>.<strong>unshift</strong>(<em>child</em>)
+            <p>
+              Inserts <em>child</em> at the begining of the <em>node</em>.<strong>children</strong> array. <br /><br />
+              <strong>return</strong> <em>node</em>
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>childIndex</strong>(<em>child</em>)
+            <p>
+              <strong>return</strong> the numeric index of the <em>child</em> or -1 if not found.
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>nodesByPoint</strong>(<em>x</em>, <em>y</em>)
+            <p>
+              Uses <em>node</em>.<strong>walk</strong> to walk down the tree looking for nodes that contain <em>x</em> and <em>y</em>.<br /><br />
+
+              <strong>return</strong> walker (see: <em>node</em>.<strong>walk</strong>)
+            </p>
+          </li>
         </ul>
     </p>
-    
+
     <h3>Eventable</h3>
     <p>
       The Eventable feature provides a means for objects to communicate via events.<br />
-      
+
       <h4>Event Flow</h4>
       <p>
         All events that are triggered are handled first by the current node's bound event handlers, and then the event flows upward towards the root of the scene in a "bubbling" fashion.  Bubbling is typically achieved by calling trigger on a parent node, if the parent node is Eventable.<br /><br />
         An event handler (<strong>fn</strong> parameter to the <em>node</em>.<strong>event.bind</strong> event below) that returns false will cause the "bubbling" to stop immediately. No other event handlers will be called.
       </p>
       <h4>Feature Overview</h4>
-      
+
       Eventable is attached to objects by way of a namespace property "event".  All methods useful to event capabilities are nested under the <strong>event</strong> namespace.
     </p>
     <p>
@@ -304,7 +371,7 @@
 
     <h3>RelativeToParent</h3>
     <p>
-      
+
       This feature moves a node whenever it's parent node moves. Re-parenting a node will unbind from the current parent and bind to the new parent. How the child reacts to the parent's movement is controlled by the positionChange method.
       <ul>
         <li>
