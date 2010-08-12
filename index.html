@@ -6,7 +6,7 @@
       body {
         font-family: helvetica, arial;
         font-size: 0.85em;
-        width: 35em;
+        width: 40em;
         margin: 0 auto;
       }
     </style>
@@ -22,12 +22,12 @@
       <ul>
         <li><strong>carena.applyProperties(obj, props)</strong>
           <p>
-            All properties from the props argument are copied onto the obj, allowing for the copying of enumerable getters/setters.
+            All properties from the <strong>props</strong> argument are copied onto the <strong>obj</strong>, allowing for the copying of enumerable getters/setters.
           </p>
         </li>
         <li><strong>carena.Erect(structure, features)</strong>
           <p>
-            Builds a tree with a common set of features. (Still under r&amp;d)
+            Builds a tree with a common set of <strong>features</strong>. (Still under r&amp;d)
           </p>
         </li>
         <li><strong>carena.Build(obj, features, options)</strong>
@@ -60,9 +60,9 @@
     <p>
       Dynamic features are used to augment the features of an existing object.  There are two ways to apply the following features to your objects.<br />
       <br />
-      1. Utilize the carena.Build() method; this is generally done by calling carena.build(obj, [carena.feature.{feature1}, carena.feature.{feature2}]).  This will return you your original `obj` augmented with feature1 and feature 2<br />
+      1. Utilize the <strong>carena.Build</strong> method; this is generally done by calling <strong>carena.build(obj, [carena.feature.{feature1}, carena.feature.{feature2}])</strong>.  This will return you your original <strong>obj</strong> augmented with <strong>feature1</strong> and <strong>feature2</strong><br />
       <br />
-      2. If you want to add a single feature to an object, you can do so easily by: carena.feature.feature1(obj).  `obj` will be augmented with methods and properties from the feature and returned to you.
+      2. If you want to add a single feature to an object, you can do so easily by: <strong>carena.feature.feature1(obj)</strong>.  <strong>obj</strong> will be augmented with methods and properties from the feature and returned to you.
     </p>
     <h3>Node</h3>
     <p>
@@ -80,19 +80,48 @@
     <p>
       The Eventable feature provides a means for objects to communicate via events.<br />
       
-      Eventable is attached to objects by way of a namespace property "event".  All methods useful to event capabilities are nested under the event namespace.
+      <h4>Event Flow</h4>
+      <p>
+        All events that are triggered are handled first by the current node's bound event handlers, and then the event flows upward towards the root of the scene in a "bubbling" fashion.  Bubbling is typically achieved by calling trigger on a parent node, if the parent node is Eventable.<br /><br />
+        An event handler (<strong>fn</strong> parameter to the <strong>node.event.bind</strong> event below) that returns false will cause the "bubbling" to stop immediately. No other event handlers will be called.
+      </p>
+      <h4>Feature Overview</h4>
+      
+      Eventable is attached to objects by way of a namespace property "event".  All methods useful to event capabilities are nested under the <strong>event</strong> namespace.
     </p>
     <p>
-      These capabilities include:
+      Many events are namespaced for organization's sake.  Examples of namespaced events are "node.x", "node.parent", "drag.start", etc..
+      <br /><br />
+      All functions exposed by the Eventable feature take a <strong>name</strong> parameter, which may contain a 'namespace.*' for applying the operation to the entire namespace and any children namespaces (recursively).
+    </p>
+    <p>
+      Eventable adds the following capabilities to an object:
       <ul>
-        <li>bind</li>
-        <li>unbind</li>
-        <li>trigger</li>
+        <li><strong>node.event.bind(name, fn)</strong>
+          <p>
+            <strong>name</strong> is the name of the event that you would like to capture.  Event names may contain .*'s for capturing entire namespaces of events at a time (i.e: node.* will capture every node event).<br /><br />
+            <strong>fn</strong> is a callback function that takes two arguments: <strong>name</strong> and <strong>data</strong>. <strong>name</strong> is the actual name of the event, and data is an object of important information regarding that event.<br /><br />
+            <strong>NOTE:</strong> returning false from the <strong>fn</strong> callback will cause the current event to stop bubbling.
+          </p>
+        </li>
+
+        <li>
+          <strong>node.event.unbind(name, [ fn ])</strong>
+          <p>
+            Use this to unbind events from a node. <strong>fn</strong> is optional, and not providing it will remove all callbacks associated with the <strong>name</strong>.
+          </p>
+        </li>
+
+        <li>
+          <strong>node.event.trigger(name, data)</strong>
+          <p>
+            Emits an event on the owning node. <strong>data</strong> is a snapshot of data that should be sent along with the event. If none of the event handlers on the current node cancel the event (return false), then the same event is triggered on the parent of the current node (if possible).
+          </p.>
+        </li>
       </ul>
     </p>
     <p>
-      Many events are namespaced for organization's sake.  Examples of namespaced events are "node.x", "node.parent", "drag.start", etc..<br />
-      <br />
+
       When binding or triggering events, you may trigger by the entire name or by namespace. For example, If you bound to "node.*" the following events would be caught:
       <ul>
         <li>node.x</li>
@@ -123,6 +152,30 @@
 
     <h3>RelativeToParent</h3>
     <p>
+      
+      This feature moves a node whenever it's parent node moves. Re-parenting a node will unbind from the current parent and bind to the new parent. How child reacts to the parent's movement is controlled by the positionChange method.
+      <ul>
+        <li>
+          <strong>node.positionChanged(name, data)</strong>
+          <p>
+            This is an event handler for parent.x and parent.y changes. <strong>name</strong> is the name of the event, and data contains the following properties:
+            <ul>
+              <li>
+                  <strong>data.previous</strong>
+                  <p>
+                    Previous value of the parent's x or y (use <strong>name</strong> to determine which)
+                  </p>
+              </li>
+              <li>
+                <strong>data.current</strong>
+                <p>
+                  Current value of the parent's x or y (use <strong>name</strong> to determine which)
+                </p>
+              </li>
+            </ul>
+          </p>
+        </li>
+      </ul>
     </p>
 
     <h2>Demos</h2>
