@@ -9,6 +9,17 @@
         width: 40em;
         margin: 0 auto;
       }
+      
+      pre.data {
+        border:1px solid orange;
+        background: black;
+        color: lightgreen;
+        
+      }
+      
+      em {
+        font-size:0.86em;
+      }
     </style>
   </head>
   <body>
@@ -20,27 +31,27 @@
     <p>
       Carena's core feature-set is currently very minimal, providing only a small set methods:
       <ul>
-        <li><strong>carena.applyProperties(obj, props)</strong>
+        <li><em>carena</em>.<strong>applyProperties(obj, props)</strong>
           <p>
-            All properties from the <strong>props</strong> argument are copied onto the <strong>obj</strong>, allowing for the copying of enumerable getters/setters.
+            All properties from the <em>props</em> argument are copied onto the <em>obj</em>, allowing for the copying of enumerable getters/setters.
           </p>
         </li>
-        <li><strong>carena.Erect(structure, features)</strong>
+        <li><em>carena</em>.<strong>Erect(structure, features)</strong>
           <p>
-            Builds a tree with a common set of <strong>features</strong>. (Still under r&amp;d)
+            Builds a tree with a common set of <em>features</em>. (Still under r&amp;d)
           </p>
         </li>
-        <li><strong>carena.Build(obj, features, options)</strong>
+        <li><em>carena</em>.<strong>Build(obj, features, options)</strong>
           <p>
-            Builds an object to your specifications. <strong>obj</strong> is your original object that you want to build on top of.  <strong>features</strong> is an array of carena enabled features (for a list see the Dynamic Features section below). <strong>options</strong> is simply an object that gets passed to every feature that is used to build your new object.
+            Builds an object to your specifications. <em>obj</em> is your original object that you want to build on top of.  <em>features</em> is an array of carena enabled features (for the base list see the Dynamic Features section below). <em>options</em> is simply an object that gets passed to every feature that is used to build your new object.
           </p>
         </li>
-        <li><strong>carena.Design(obj, features, options)</strong>
+        <li><em>carena</em>.<strong>Design(obj, features, options)</strong>
           <p>
-            Use carena.Design for building a factory that builds nodes that share the same features.  The signature is exactly the same as <strong>carena.Build</strong>, except for the fact that it returns a function that also has the same signature, and behaves exactly like <strong>carena.Build</strong>.
+            Use carena.Design for building a factory that builds nodes that share the same features.  The signature is exactly the same as <em>carena</em>.<strong>Build</strong>, except for the fact that it returns a function that also has the same signature, and behaves exactly like <em>carena</em>.<strong>Build</strong>.
           </p>
         </li>
-        <li><strong>carena.commonAncestor(obj1, obj2)</strong> (Will move soon!)
+        <li><em>carena</em>.<strong>commonAncestor(obj1, obj2)</strong> (Will move soon!)
           <p>
             This method finds the common ancestor between two nodes. Example
 <pre>
@@ -60,90 +71,158 @@
     <p>
       Dynamic features are used to augment the features of an existing object.  There are two ways to apply the following features to your objects.<br />
       <br />
-      1. Utilize the <strong>carena.Build</strong> method; this is generally done by calling <strong>carena.build(obj, [carena.feature.{feature1}, carena.feature.{feature2}])</strong>.  This will return you your original <strong>obj</strong> augmented with <strong>feature1</strong> and <strong>feature2</strong><br />
+      1. Utilize the <em>carena</em>.<strong>Build</strong> method; this is generally done by calling <em>carena</em>.<strong>build(obj, [carena.feature.{feature1}, carena.feature.{feature2}])</strong>.  This will return you your original <em>obj</em> augmented with <strong>feature1</strong> and <strong>feature2</strong><br />
       <br />
-      2. If you want to add a single feature to an object, you can do so easily by: <strong>carena.feature.feature1(obj)</strong>.  <strong>obj</strong> will be augmented with methods and properties from the feature and returned to you.
+      2. If you want to add a single feature to an object, you can do so easily by: <em>carena</em>.<strong>feature.feature1(obj)</strong>.  <em>obj</em> will be augmented with methods and properties from the feature and returned to you.
     </p>
     <h3>Node</h3>
     <p>
-      The Node is the carena's core feature, which allows nodes to positioned, styled, and organized into trees.
+      The Node is the carena's core feature which allows nodes to positioned, styled, organized into trees, and traversed.
     </p>
     <h4>Getters / Setters</h4>
     <p>
         <ul>
-          <li><strong>node.x</strong>
+          <li><em>node</em>.<strong>x</strong>
             <p>
-              on <strong>read</strong>: returns the current value<br />
-              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.x" event is triggered with data.previous set to the old x value, and node.current set to the current value.
+              on <em>read</em>: returns the current value<br />
+              on <em>write</em>: This node and parents are marked dirty. If this node is Eventable, a "node.x" event is triggered:
+              <pre>
+{
+  node     : <em>node</em>,
+  current  : `node.x`,
+  previous : `previous node.x`
+}</pre>
+
+ with data.previous set to the old x value, and node.current set to the current value.
             </p>
           </li>
-          <li><strong>node.y</strong>
+          <li><em>node</em>.<strong>y</strong>
             <p>
-              on <strong>read</strong>: returns the current value<br />
-              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.y" event is triggered with data.previous set to the old y value, and node.current set to the current value.
+              on <em>read</em>: returns the current value<br />
+              on <em>write</em>: <em>node</em> and parents are marked dirty. If this node is Eventable, a "node.y" event is triggered:
+              <pre>
+{
+  node     : <em>node</em>,
+  current  : `current node.y`,
+  previous : `original node.y`
+}</pre>
             </p>
           </li>
-          <li><strong>node.z</strong>
+          <li><em>node</em>.<strong>z</strong>
             <p>
-              on <strong>read</strong>: returns the current value<br />
-              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.z" event is triggered with data.previous set to the old z value, and node.current set to the current value.
+              on <em>read</em>: returns the current value<br />
+              on <em>write</em>: This node and parents are marked dirty. If this node is Eventable, a "node.z" event is triggered:
+              <pre>
+{
+  node     : <em>node</em>,
+  current  : `current node.z`,
+  previous : `original node.z`
+}</pre>
             </p>          
           </li>
-          <li><strong>node.width</strong>
+          <li><em>node</em>.<strong>width</strong>
             <p>
-              on <strong>read</strong>: returns the current value<br />
-              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.width" event is triggered with data.previous set to the old width, and node.current set to the current value.
+              on <em>read</em>: returns the current value<br />
+              on <em>write</em>: This node and parents are marked dirty. If this node is Eventable, a "node.width" event is triggered:
+              <pre>
+{
+  node     : <em>node</em>,
+  current  : `current node.width`,
+  previous : `original node.width`
+}</pre>
             </p>
           </li>
-          <li><strong>node.height</strong>
+          <li><em>node</em>.<strong>height</strong>
             <p>
-              on <strong>read</strong>: returns the current value<br />
-              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.height" event is triggered with data.previous set to the old height, and node.next set to the current value.
+              on <em>read</em>: returns the current value<br />
+              on <em>write</em>: This node and parents are marked dirty. If this node is Eventable, a "node.height" event is triggered:
+              <pre>
+{
+  node     : <em>node</em>,
+  current  : `current node.height`,
+  previous : `original node.height`
+}</pre>
             </p>
           </li>
-          <li><strong>node.children (read only)</strong>
+          <li><em>node</em>.<strong>children (read only)</strong>
             <p>
-              returns the children of the node (array);
+              returns the children of node (array)
             </p>
-          <li><strong>node.dirty</strong>
+          <li><em>node</em>.<strong>dirty</strong>
             <p>
               Dirtyness is a way for node's caches to be re-calculated.  For instance, if a node hasn't changed since the last render then there is no reason to re-render the node, as it would simply waste cycles.<br /><br />
-              on <strong>read</strong>: returns true or false<br />
-              on <strong>write</strong>: if set to true, this node and all parent nodes will be marked dirty.
+              on <em>read</em>: returns true or false<br />
+              
+              on <em>write</em>: a "node.dirty" event will be triggered:
+              <pre>
+{
+  node     : <em>node</em>,
+  current  : `node.parent`,
+  previous : `previous node.parent`
+}</pre>
+            If set to true, and the current node is currently clean, this node and all parent nodes will be marked dirty.
             </p>
           </li>
-          <li><strong>node.parent</strong>
+          <li><em>node</em>.<strong>parent</strong>
             <p>
-              on <strong>read</strong>: return the current node's parent or null<br />
-              on <strong>write</strong>: This node and parents are marked dirty. If this node is Eventable, a "node.parent" event is triggered with 
+              on <em>read</em>: return the current node's parent or null<br />
+              on <em>write</em>: This node and parents are marked dirty. If this node is Eventable, a "node.parent" event is triggered:
+              <pre>
+{
+  node     : <em>node</em>,
+  current  : `node.parent`,
+  previous : `previous node.parent`
+}</pre>
             </p>
           </li>
-          <li><strong>node.bounds (read only)</strong>
+          <li><em>node</em>.<strong>bounds (read only)</strong>
             <p>
-              If the node is dirty, the bounding box of this node will be computed by descending into it's children (recursively) to find the biggest bounding rectangle that fits all of its children.
+              If the <em>node</em> is dirty, the bounding box of this node will be computed by descending into it's children (recursively) to find the biggest bounding rectangle that fits all of its children.
               <br /><br />
-              <strong>NOTE:</strong> at the time of this writing, re-calculating the bounds also marks the node's dirtyness as false.
+              <strong>NOTE:</strong> at the time of this writing, re-calculating the bounds also marks the node clean (node.dirty = false).
             </p>
           </li>
         </ul>
-        
     </p>
     <h3>Methods</h3>
       <p>
-        <li>add</li>
-        <li>remove</li>
-        <li>walk</li>
-        <li>ascend</li>
-        <li>descend</li>
-        <li>parent</li>
-        <li>children</li>
-        <li>child</li>
-        <li>containsPoint</li>
-        <li>clean</li>
-        <li>unshift</li>
-        <li>childIndex</li>
-        <li>nodesByPoint</li>
-      </ul>
+        <ul>
+          <li>
+            <em>node</em>.<strong>add(child)</strong>
+            <p>
+              Adds <em>child</em> to the current node's children array, reparents the <em>child</em>, and triggers "node.child" event:
+              <pre>
+  {
+    node  : <em>node</em>,
+    child : <em>child</em>
+  }</pre>
+              <strong>returns</strong> <em>node</em> or <em>false</em> if a recursive structure is detected.
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>remove(child)</strong>
+            <p>
+              If <em>child</em> is a child of <em>node</em> then it removes the child and triggers a "node.remove" event:
+              <pre>
+{
+  node     : <em>node</em>,
+  child    : <em>child</em>
+}</pre>
+            <strong>returns</strong> <em>node</em>
+            </p>
+          </li>
+          <li>walk</li>
+          <li>ascend</li>
+          <li>descend</li>
+          <li>parent</li>
+          <li>children</li>
+          <li>child</li>
+          <li>containsPoint</li>
+          <li>clean</li>
+          <li>unshift</li>
+          <li>childIndex</li>
+          <li>nodesByPoint</li>
+        </ul>
     </p>
     
     <h3>Eventable</h3>
@@ -153,7 +232,7 @@
       <h4>Event Flow</h4>
       <p>
         All events that are triggered are handled first by the current node's bound event handlers, and then the event flows upward towards the root of the scene in a "bubbling" fashion.  Bubbling is typically achieved by calling trigger on a parent node, if the parent node is Eventable.<br /><br />
-        An event handler (<strong>fn</strong> parameter to the <strong>node.event.bind</strong> event below) that returns false will cause the "bubbling" to stop immediately. No other event handlers will be called.
+        An event handler (<strong>fn</strong> parameter to the <em>node</em>.<strong>event.bind</strong> event below) that returns false will cause the "bubbling" to stop immediately. No other event handlers will be called.
       </p>
       <h4>Feature Overview</h4>
       
@@ -167,7 +246,7 @@
     <p>
       Eventable adds the following capabilities to an object:
       <ul>
-        <li><strong>node.event.bind(name, fn)</strong>
+        <li><em>node</em>.<strong>event.bind(name, fn)</strong>
           <p>
             <strong>name</strong> is the name of the event that you would like to capture.  Event names may contain .*'s for capturing entire namespaces of events at a time (i.e: node.* will capture every node event).<br /><br />
             <strong>fn</strong> is a callback function that takes two arguments: <strong>name</strong> and <strong>data</strong>. <strong>name</strong> is the actual name of the event, and data is an object of important information regarding that event.<br /><br />
@@ -176,16 +255,16 @@
         </li>
 
         <li>
-          <strong>node.event.unbind(name, [ fn ])</strong>
+          <em>node</em>.<strong>event.unbind(name, [ fn ])</strong>
           <p>
             Use this to unbind events from a node. <strong>fn</strong> is optional, and not providing it will remove all callbacks associated with the <strong>name</strong>.
           </p>
         </li>
 
         <li>
-          <strong>node.event.trigger(name, data)</strong>
+          <em>node</em>.<strong>event.trigger(name, data)</strong>
           <p>
-            Emits an event on the owning node. <strong>data</strong> is a snapshot of data that should be sent along with the event. If none of the event handlers on the current node cancel the event (return false), then the same event is triggered on the parent of the current node (if possible).
+            Emits an event on <em>node</em>. <strong>data</strong> is an that is sent along with the event. If none of the event handlers on <em>node</em> cancel the event (return <em>false</em>), then the same event is triggered on the parent of <em>node</em> (if possible).
           </p.>
         </li>
       </ul>
@@ -229,7 +308,7 @@
       This feature moves a node whenever it's parent node moves. Re-parenting a node will unbind from the current parent and bind to the new parent. How the child reacts to the parent's movement is controlled by the positionChange method.
       <ul>
         <li>
-          <strong>node.positionChanged(name, data)</strong>
+          <em>node</em>.<strong>positionChanged(name, data)</strong>
           <p>
             This is an event handler for parent.x and parent.y changes. <strong>name</strong> is the name of the event, and data contains the following properties:
             <ul>
