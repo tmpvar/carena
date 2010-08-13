@@ -475,6 +475,12 @@ function ascend(obj, fn, depth) {
 
     <h3>DropManager</h3>
     <p>
+      Manages in-flight <em>Draggable</em> objects and attempts to link them up with
+      <em>DropTarget</em>s by utilizing <em>node</em>.<strong>nodesByPoint</strong>
+      to collect nodes that the <em>Draggable</em> is currently residing over
+    </p>
+    <p>
+      When a "drag.end" event is detected, the list of <em>DropTarget</em>s is evaluated by calling <em>node</em>.<strong>dropFilter</strong> and finding the best match for the drop.  If an acceptable target is found, a "drop.end" event is triggered on the found <em>node</em>
     </p>
 
     <h3>RelativeToParent</h3>
