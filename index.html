@@ -412,7 +412,67 @@ function ascend(obj, fn, depth) {
 
     <h3>Camera</h3>
     <p>
+      The job of this feature is to provide a way to view branches of the scene tree
+      using the <em>Renderer</em> feature. The camera is attached to a <em>node</em>
+      by setting its <em>camera</em>.<strong>target</strong> property. While attached
+      to a <em>target</em> the <em>Camera</em> will forward all events triggered or
+      bubbling through its target to itself.
     </p>
+    <p>
+      <strong>NOTE:</strong> This feature requires an <em>options.render</em> be
+      set to a build <em>Renderer</em> object.
+    </p>
+    <p>
+      This allows for some interesting behavior. If you made a camera a <em>Node</em>
+      you could attach children to the camera and use them as a menuing system that is
+      not affected by the render order of the scene tree (they are always rendered last).
+    </p>
+    <h4>Events</h4>
+    <p>
+      Aside from proxying events, there are some events that the camera does trigger.
+      <ul>
+        <li>mouse.move - triggers when a mouse moves on the DOM Document</li>
+        <li>mouse.down - triggers when a <em>mousedown</em> DOM event is handled</li>
+        <li>mouse.up - triggers when a <em>mouseup</em> DOM event is handled</li>
+      </ul>
+    </p>
+    <h4>Getters / Setters</h4>
+    <p>
+      <ul>
+        <li>
+          <em>node</em>.<strong>target</strong>
+          <p>
+            on <em>read</em> returns <em>node</em> or <em>null</em><br />
+            on <em>write</em> Unbinds "*" and the <em>node</em>.<strong>eventProxy</strong> handler from the old target and binds "*" to the incoming <em>node</em>
+          <p>
+        </li>
+      </ul>
+    </p>
+
+    <h4>Methods</h4>
+    <p>
+      <ul>
+        <li>
+          <em>node</em>.<strong>eventProxy</strong>()
+          <p>
+            This is an extendable method who's default implementation takes an incoming event, and <em>node</em>.<strong>trigger</strong>s it on <em>node</em>.<br /><br />
+
+            <strong>return</strong> the result of the <em>node</em>.<strong>trigger</strong>
+          </p>
+
+        </li>
+        <li>
+          <em>node</em>.<strong>render</strong>()
+          <p>
+            This method uses the <em>options.renderer</em>'s <em>render</em> method to
+            render the <em>camera</em>'s current target. Once this is done,
+            <em>options.renderer</em>.<strong>renderTree</strong> is called on all of
+            <em>node</em>.<strong>children</strong> if available.
+          </p>
+        </li>
+      </ul>
+    </p>
+
 
     <h3>Draggable</h3>
     <p>
@@ -479,8 +539,17 @@ function ascend(obj, fn, depth) {
       <em>DropTarget</em>s by utilizing <em>node</em>.<strong>nodesByPoint</strong>
       to collect nodes that the <em>Draggable</em> is currently residing over
     </p>
+    <h4>Events</h4>
     <p>
-      When a "drag.end" event is detected, the list of <em>DropTarget</em>s is evaluated by calling <em>node</em>.<strong>dropFilter</strong> and finding the best match for the drop.  If an acceptable target is found, a "drop.end" event is triggered on the found <em>node</em>
+      <ul>
+        <li>drop.end</li>
+      </ul>
+    </p>
+    <p>
+      When a "drag.end" event is detected, the list of <em>DropTarget</em>s is evaluated
+      by calling <em>node</em>.<strong>dropFilter</strong> and finding the best match
+      for the drop.  If an acceptable <em>DropTarget</em> is found, a "drop.end" event is triggered
+      on the found <em>node</em>
     </p>
 
     <h3>RelativeToParent</h3>
