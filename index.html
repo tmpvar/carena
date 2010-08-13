@@ -347,10 +347,65 @@ function ascend(obj, fn, depth) {
     </p>
 
     <h3>Renderer</h3>
+
+    <p>
+        The Renderer feature is used to hold an instance of the rendering context, manage when and how a tree is partially re-rendered, and when to clear the context and start rendering from a blank context.
+    </p>
+    <p>
+      <strong>NOTE:</strong> Renderer requires you provide an <em>options</em>.<strong>canvas</strong>
+       object which implements getContext("2d"), and <em>options.canvas</em>.<strong>getContext</strong>() returns
+       an object compatible with the html5 canvas element's
+      <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#2dcontext">2d context</a>.
+    </p>
+    <h4>Getters / Setters</h4>
     <p>
         <ul>
           <li>
+            <em>node</em>.<strong>context</strong> (read only)
+            <p>
+              on <em>read</em> returns the raw 2d context object
+            </p>
+          </li>
+          <li>
+            <em>node</em>.<strong>clearColor</strong><br />
+            This is the background color when nothing is rendered, it defaults to black
+            <p>
+              on <em>read</em> return the current clear color<br />
+              on <em>write</em> mark the renderer dirty, which will trigger a complete re-draw on the next render pass.
+            </p>
+          </li>
         </ul>
+    </p>
+    <h4>Methods</h4>
+    <p>
+      <ul>
+          <li>
+            <em>node</em>.<strong>renderTree</strong>(<em>root</em>)
+            <p>
+              When called the <em>root</em>.<strong>walk</strong> method is invoked in
+              a way that will climb down into <em>root</em>'s children recursively,
+              calling <em>node</em>.<strong>render</strong> on each one.
+            </p>
+            <p>
+              Dirty nodes will not be rendered infact, because of the way dirty works,
+              entire branches of the tree are skipped if their root is marked dirty.<br /><br />
+
+            <strong>return</strong> <em>walker</em> (see: <em>node</em>.<strong>walk</strong>)
+            </p>
+
+          </li>
+          <li>
+            <em>node</em>.<strong>render</strong>(<em>root</em>)
+            <p>
+              This method clears the context to the <em>node</em>.<strong>clearColor</strong> if <em>node</em>.<strong>dirty</strong> is true.<br /><br />
+
+              <em>root</em> is then passed into <em>node</em>.<strong>renderTree</strong>for rendering of the rest of the target tree.<br /><br />
+
+              <strong>return</strong> <em>node</em>
+            </p>
+          </li>
+      </ul>
+
     </p>
 
     <h3>Camera</h3>
