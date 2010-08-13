@@ -361,6 +361,12 @@ function ascend(obj, fn, depth) {
     <p>
         <ul>
           <li>
+            <em>node</em>.<strong>canvas</strong> (read only)
+            <p>
+              on <em>read</em> returns the DOM Canvas element
+            </p>
+          </li>
+          <li>
             <em>node</em>.<strong>context</strong> (read only)
             <p>
               on <em>read</em> returns the raw 2d context object
@@ -494,20 +500,26 @@ function ascend(obj, fn, depth) {
     <p>
       <ul>
         <li>
-          <p>
           <em>node</em>.<strong>dragstart</strong>(<em>node</em>, <em>mouse</em>)
+          <p>
+            Sets up the <em>node</em>'s offset to the <em>mouse</em> coordinates.
+            <br /><br />
+            <strong>return</strong> <em>undefined</em>
           </p>
-        </li>
-
         <li>
           <em>node</em>.<strong>dragging</strong>(<em>node</em>, <em>mouse</em>)
           <p>
+            Sets <em>node</em>.<strong>x</strong> and <em>node</em>.<strong>y</strong> based on the difference between the old <em>node</em> position, the current <em>mouse</em> position, and the originally calculated offset.<br /><br />
+
+          <strong>return</strong> <em>undefined</em>
           </p>
         </li>
 
         <li>
           <em>node</em>.<strong>dragend</strong>(<em>node</em>, <em>mouse</em>)
           <p>
+            Resets the <em>node</em>'s offset to 0,0<br /><br />
+            <strong>return</strong> <em>undefined</em>
           </p>
        </li>
       </ul>
