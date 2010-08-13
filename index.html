@@ -397,7 +397,9 @@ function ascend(obj, fn, depth) {
           <li>
             <em>node</em>.<strong>render</strong>(<em>root</em>)
             <p>
-              This method clears the context to the <em>node</em>.<strong>clearColor</strong> if <em>node</em>.<strong>dirty</strong> is true.<br /><br />
+              This method clears the context to the
+              <em>node</em>.<strong>clearColor</strong>
+              <!-- if <em>node</em>.<strong>dirty</strong> is true -->.<br /><br />
 
               <em>root</em> is then passed into <em>node</em>.<strong>renderTree</strong>for rendering of the rest of the target tree.<br /><br />
 
@@ -418,6 +420,57 @@ function ascend(obj, fn, depth) {
 
     <h3>DropTarget</h3>
     <p>
+      Enables dropping of draggable elements onto the target node. This feature emits a
+      various events upon different states of the drop action.
+    </p>
+    <h4>Events</h4>
+    <p>
+      <ul>
+        <li>drop.start - a <em>Draggable</em> is first moved over this <em>node</em></li>
+        <li>drop.move - a <em>Draggable</em> is moved while over this <em>node</em></li>
+        <li>drop.end - a <em>Draggable</em> is dropped on this <em>node</em></li>
+      </ul>
+    </p>
+    <h4>Methods</h4>
+    <p>
+      <ul>
+        <li>
+          <em>node</em>.<strong>dropFilter</strong>(<em>source</em>, </em>mouse</em>)
+          <p>
+            This method inspects <em>source</em> and returns whether or not it is allowed to be dropped in <em>node</em><br /><br />
+            <em>source</em> the incoming object <br />
+            <em>mouse</em> contains the current <em>x</em> and <em>y</em> coordinates of the mouse
+          </p>
+          <p>
+            <strong>return</strong> <em>true</em> if allowed and <em>false</em> if denied
+          </p>
+        </li>
+        <li>
+          <em>node</em>.<strong>dropstart</strong>(<em>source</em>, </em>mouse</em>)
+          <p>
+            This is an extendable handler for the "drop.start" event.  By default it does nothing<br /><br />
+            <em>source</em> the incoming object <br />
+            <em>mouse</em> contains the current <em>x</em> and <em>y</em> coordinates of the mouse
+          </p>
+        </li>
+        <li>
+          <em>node</em>.<strong>dropping</strong>(<em>source</em>, </em>mouse</em>)
+          <p>
+            This is an extendable handler for the "drop.move" event. By default it does nothing <em>node</em><br /><br />
+            <em>source</em> the incoming object <br />
+            <em>mouse</em> contains the current <em>x</em> and <em>y</em> coordinates of the mouse
+          </p>
+        </li>
+        <li>
+          <em>node</em>.<strong>dropend</strong>(<em>source</em>, </em>mouse</em>)
+          <p>
+            This is an extendable handler for the "drop.end" event. By default it reparents
+            the <em>source</em> object to <em>node</em><br /><br />
+            <em>source</em> the incoming object <br />
+            <em>mouse</em> contains the current <em>x</em> and <em>y</em> coordinates of the mouse
+          </p>
+        </li>
+      </ul>
     </p>
 
     <h3>DropManager</h3>
