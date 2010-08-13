@@ -431,9 +431,11 @@ function ascend(obj, fn, depth) {
     <p>
       Aside from proxying events, there are some events that the camera does trigger.
       <ul>
-        <li>mouse.move - triggers when a mouse moves on the DOM Document</li>
-        <li>mouse.down - triggers when a <em>mousedown</em> DOM event is handled</li>
-        <li>mouse.up - triggers when a <em>mouseup</em> DOM event is handled</li>
+        <li>mouse.move - mouse just moved</li>
+        <li>mouse.in   - mouse first moved over a <em>node</em> in the scene tree</li>
+        <li>mouse.out  - mouse moves off of a <em>node</em> in the scene</em>
+        <li>mouse.down - when <em>mousedown</em> DOM event is handled</li>
+        <li>mouse.up - when a <em>mouseup</em> DOM event is handled</li>
       </ul>
     </p>
     <h4>Getters / Setters</h4>
@@ -476,8 +478,40 @@ function ascend(obj, fn, depth) {
 
     <h3>Draggable</h3>
     <p>
+      This feature allows nodes to be "picked up" and "dragged" around the canvas.
+      It works by binding to the "mouse.move", "mouse.down", and "mouse.up" events,
+      and triggering it's own events.
     </p>
+    <h4>Events</h4>
+    <p>
+      <ul>
+        <li>drag.start - mouse down on <em>node</em></li>
+        <li>drag.move - mouse is held down on <em>node</em> and moving</li>
+        <li>drag.end - mouse is released on the previously held <em>node</em></li>
+      </ul>
+    </p>
+    <h4>Methods</h4>
+    <p>
+      <ul>
+        <li>
+          <p>
+          <em>node</em>.<strong>dragstart</strong>(<em>node</em>, <em>mouse</em>)
+          </p>
+        </li>
 
+        <li>
+          <em>node</em>.<strong>dragging</strong>(<em>node</em>, <em>mouse</em>)
+          <p>
+          </p>
+        </li>
+
+        <li>
+          <em>node</em>.<strong>dragend</strong>(<em>node</em>, <em>mouse</em>)
+          <p>
+          </p>
+       </li>
+      </ul>
+    </p>
     <h3>DropTarget</h3>
     <p>
       Enables dropping of draggable elements onto the target node. This feature emits a
