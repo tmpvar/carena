@@ -70,11 +70,18 @@
 
     <h2>Dynamic Features</h2>
     <p>
-      Dynamic features are used to augment the features of an existing object.  There are two ways to apply the following features to your objects.<br />
+      Dynamic features are used to augment the features of an existing object.
       <br />
-      1. Utilize the <em>carena</em>.<strong>Build</strong> method; this is generally done by calling <em>carena</em>.<strong>build(obj, [carena.feature.{feature1}, carena.feature.{feature2}])</strong>.  This will return you your original <em>obj</em> augmented with <strong>feature1</strong> and <strong>feature2</strong><br />
+      Utilize the <em>carena</em>.<strong>Build</strong> method to augment objects with new features; this is generally done by calling <em>carena</em>.<strong>Build(obj, [carena.feature.{feature1}, carena.feature.{feature2}])</strong>.  This will return you your original <em>obj</em> augmented with <strong>feature1</strong> and <strong>feature2</strong><br />
       <br />
-      2. If you want to add a single feature to an object, you can do so easily by: <em>carena</em>.<strong>feature.feature1(obj)</strong>.  <em>obj</em> will be augmented with methods and properties from the feature and returned to you.
+      Built objects contain a <em>node</em>.<strong>dehydrate</strong>() method, which makes it really simple to serialize the tree.<br />
+      <br />
+      Features are functions that take 3 arguments:
+      <ul>
+        <li><em>obj</em> object on which the feature will hang methods/properties.</li>
+        <li><em>options</em></li>
+        <li><em>storage</em> shared object across features of a <em>node</em>, which is used by dehydrate to provide a lightweight representation of the <em>node</em>'s state.</li>
+      </ul>
     </p>
     <h3>Node</h3>
     <p>
