@@ -332,7 +332,9 @@ function ascend(obj, fn, depth) {
         <li>
           <em>node</em>.<strong>event.trigger(name, data)</strong>
           <p>
-            Emits an event on <em>node</em>. <strong>data</strong> is an that is sent along with the event. If none of the event handlers on <em>node</em> cancel the event (return <em>false</em>), then the same event is triggered on the parent of <em>node</em> (if possible).
+            Emits an event on <em>node</em>. <strong>data</strong> is an that is sent along with the event. If none of the event handlers on <em>node</em> cancel the event (return <em>false</em>), then the same event is triggered on the parent of <em>node</em> (if possible).<br /><br />
+
+            <strong>return</strong> <em>false</em> if the event was handled or cancelled
           </p.>
         </li>
       </ul>
