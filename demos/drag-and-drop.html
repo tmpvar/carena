@@ -23,17 +23,17 @@
 
             TODO: determine where the camera's children come into play
                   idealy we won't bubble all the way up to the root of thei
-									tree but instead handle it in the camera, somehow.
+                  tree but instead handle it in the camera, somehow.
         */
         var feature  = carena.feature,
             renderer = carena.build({}, ["carena.Renderer"], {
-							canvas: document.getElementById("drag-and-drop")
-						}),
-					  camera   = carena.build({},
+              canvas: document.getElementById("drag-and-drop")
+            }),
+            camera   = carena.build({},
               ["carena.Camera", "carena.DropManager"],
               { renderer: renderer}
-						),
-            BaseNode = carena.design({}, ["carena.Node", "carena.Draggable"]);
+            ),
+            BaseNode = carena.design({}, ["carena.Node", "carena.Draggable"]) ;
             scene    = BaseNode(),
             node     = BaseNode({}, ["carena.DropTarget"]),
             drag1    = BaseNode({}, ["carena.RelativeToParent"]),
@@ -41,12 +41,10 @@
             drop     = BaseNode({}, ["carena.DropTarget"]),
             fps      = 1000/60;
 
-window.scene = scene;
         camera.target = scene;
-scene.event.bind("*", function(name) { console.log(name); });
 
 
-				node.color = "orange";
+        node.color = "orange";
         node.width = 120;
         node.height = 200;
         node.x = 0;
