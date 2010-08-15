@@ -7,10 +7,10 @@
     <canvas width="400" height="400" id="draggable-window"></canvas>
     <script type="text/javascript">
       (function() {
-        var wrenderer = carena.Build({}, [carena.feature.Renderer], {canvas: document.getElementById("draggable-window")});
-            wcamera   = carena.Build({}, [carena.feature.Camera], { renderer: wrenderer});
-            cwindow  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable, carena.feature.Draggable]),
-            wbutton  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable, carena.feature.RelativeToParent]),
+        var wrenderer = carena.build({}, ["carena.Renderer"], {canvas: document.getElementById("draggable-window")});
+            wcamera   = carena.build({}, ["carena.Camera"], { renderer: wrenderer});
+            cwindow  = carena.build({}, ["carena.Node", "carena.Eventable", "carena.Draggable"]),
+            wbutton  = carena.build({}, ["carena.Node", "carena.Eventable", "carena.RelativeToParent"]),
             wmouse    = {x:0, y:0},
             wfps      = 1000/60;
 

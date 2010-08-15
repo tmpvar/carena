@@ -23,21 +23,21 @@ var ok = function(logic, failmsg)
     }
 }
 
-// Base feature testing
-ok(carena.feature.Node({}).x === 0, "Nodes should provide an x coord");
 
 // Carena Object Construction
-var nodeFactory = carena.Design({}, [carena.feature.Node]);
+var nodeFactory = carena.design({}, ["carena.Node"]);
 var aNode = nodeFactory();
-ok(aNode.bounds, "Built objects should contain all of the features designated by the 'Design' call");
+ok(aNode.bounds, "Built objects should contain all of the features designated by the 'design' call");
 
-var anExtendedNode = nodeFactory({}, [function(obj) { obj.set = true }]);
+carena.addFeature("test.feature", function(obj) { obj.set = true });
+var anExtendedNode = nodeFactory({}, ["test.feature"]);
+
 ok(anExtendedNode.set === true, "Built factories should respect new features");
 ok(anExtendedNode.x === 0, "Built factories should still respect old features");
 
 // Node Mutation Events
 var events        = ['x', 'y', 'z', 'height', 'width'],
-    mutationTest  = carena.Build({}, [carena.feature.Node, carena.feature.Eventable]),
+    mutationTest  = carena.build({}, ["carena.Node", "carena.Eventable"]),
     mutationCount = 0;
 
 mutationTest.event.bind("node.*", function(name, data) {
@@ -53,7 +53,7 @@ for (var i=0; i<events.length; i++) {
 }
 
 // Detect duplicate bound events
-var doubleBound = carena.Build({}, [carena.feature.Eventable]),
+var doubleBound = carena.build({}, ["carena.Eventable"]),
     dbFnCount = 0,
     dbFn = function() { dbFnCount++; };
 doubleBound.event.bind("test", dbFn);
@@ -122,7 +122,7 @@ ok(cancelledResult.nodesWalked === 2, "when a walk is cancelled, stop immediatel
 
 
 // Node Event Feature
-var eventNodeFactory = carena.Design({}, [carena.feature.Node, carena.feature.Eventable]);
+var eventNodeFactory = carena.design({}, ["carena.Node", "carena.Eventable"]);
 var topNode = eventNodeFactory(),
     midNode = eventNodeFactory(),
     botNode = eventNodeFactory();
@@ -206,10 +206,10 @@ ok(child2.containsPoint(8,10) === true, "8,10 is contained in child2");
 ok(child2.containsPoint(-1,-1) === false, "-1,-1 is not contained in child2");
 
 // Grandparent relative
-var RelativeNode = carena.Design({}, [
-  carena.feature.Node,
-  carena.feature.Eventable,
-  carena.feature.RelativeToParent
+var RelativeNode = carena.design({}, [
+  "carena.Node",
+  "carena.Eventable",
+  "carena.RelativeToParent"
 ]);
 var a = RelativeNode({x:0,y:0}),
     b = RelativeNode({x:0,y:0}),
