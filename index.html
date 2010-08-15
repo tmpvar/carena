@@ -32,24 +32,41 @@
     <p>
       Carena's core feature-set is currently very minimal, providing only a small set methods:
       <ul>
+        <li><em>carena</em>.<strong>addFeature(name, fn)</strong>
+          <p>
+            Registers <em>fn</em> with carena's feature loader
+          </p>
+        </li>
+        <li><em>carena</em>.<strong>require(name, arguments)</strong>
+          <p>
+            This is generally used inside of a feature to make sure that the incoming object has all of the required features.
+            <br /><br />
+            Example:
+          </p>
+          <pre>
+carena.addFeature("some.feature", function(obj, options, storage) {
+  // some.feature requires obj, to have carena.Node features
+  carena.require("carena.Node", arguments);
+});</pre>
+        </li>
         <li><em>carena</em>.<strong>applyProperties(obj, props)</strong>
           <p>
             All properties from the <em>props</em> argument are copied onto the <em>obj</em>, allowing for the copying of enumerable getters/setters.
           </p>
         </li>
-        <li><em>carena</em>.<strong>Erect(structure, features)</strong>
+        <li><em>carena</em>.<strong>erect(structure, features)</strong>
           <p>
-            Builds a tree with a common set of <em>features</em>. (Still under r&amp;d)
+            builds a tree with a common set of <em>features</em>. (Still under r&amp;d)
           </p>
         </li>
-        <li><em>carena</em>.<strong>Build(obj, features, options)</strong>
+        <li><em>carena</em>.<strong>build(obj, features, options)</strong>
           <p>
-            Builds an object to your specifications. <em>obj</em> is your original object that you want to build on top of.  <em>features</em> is an array of carena enabled features (for the base list see the Dynamic Features section below). <em>options</em> is simply an object that gets passed to every feature that is used to build your new object.
+            builds an object to your specifications. <em>obj</em> is your original object that you want to build on top of.  <em>features</em> is an array of carena enabled features (for the base list see the Dynamic Features section below). <em>options</em> is simply an object that gets passed to every feature that is used to build your new object.
           </p>
         </li>
-        <li><em>carena</em>.<strong>Design(obj, features, options)</strong>
+        <li><em>carena</em>.<strong>design(obj, features, options)</strong>
           <p>
-            Use carena.Design for building a factory that builds nodes that share the same features.  The signature is exactly the same as <em>carena</em>.<strong>Build</strong>, except for the fact that it returns a function that also has the same signature, and behaves exactly like <em>carena</em>.<strong>Build</strong>.
+            Use carena.design for building a factory that builds nodes that share the same features.  The signature is exactly the same as <em>carena</em>.<strong>build</strong>, except for the fact that it returns a function that also has the same signature, and behaves exactly like <em>carena</em>.<strong>build</strong>.
           </p>
         </li>
         <li><em>carena</em>.<strong>commonAncestor(obj1, obj2)</strong> (Will move soon!)
@@ -72,7 +89,7 @@
     <p>
       Dynamic features are used to augment the features of an existing object.
       <br />
-      Utilize the <em>carena</em>.<strong>Build</strong> method to augment objects with new features; this is generally done by calling <em>carena</em>.<strong>Build(obj, [carena.feature.{feature1}, carena.feature.{feature2}])</strong>.  This will return you your original <em>obj</em> augmented with <strong>feature1</strong> and <strong>feature2</strong><br />
+      Utilize the <em>carena</em>.<strong>build</strong> method to augment objects with new features; this is generally done by calling <em>carena</em>.<strong>build(obj, [carena.feature.{feature1}, carena.feature.{feature2}])</strong>.  This will return you your original <em>obj</em> augmented with <strong>feature1</strong> and <strong>feature2</strong><br />
       <br />
       Built objects contain a <em>node</em>.<strong>dehydrate</strong>() method, which makes it really simple to serialize the tree.<br />
       <br />
