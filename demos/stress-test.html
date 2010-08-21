@@ -51,14 +51,14 @@
         },10);
 
 
+        setInterval(function() {
+          fpsDisplay.innerHTML = frame*4+"";
+          frame=0;
+        }, 250);
+
         camera.target = scene;
         lastTime = (new Date()).getTime(); // so the fps isn't weird initially
         setTimeout(function renderDraggableWindow() {
-          thisTime = (new Date).getTime();
-          averageFPS = ((averageFPS + ((thisTime-lastTime)/frame))/2);
-          lastTime = thisTime;
-          frame=0;
-          fpsDisplay.innerHTML = ((averageFPS/1000) + "").substring(0, 4);
           camera.render();
           frame++;
           setTimeout(renderDraggableWindow, fps);
