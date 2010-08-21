@@ -21,7 +21,7 @@
             }),
             scene = carena.build({}, ["carena.Node", "carena.Eventable"]),
             mouse    = {x:0, y:0},
-            fps      = 1000/200
+            fps      = 1000/20
             averageFPS = 0
             frame = 1,
             lastTime = 0,
@@ -52,9 +52,9 @@
 
 
         setInterval(function() {
-          fpsDisplay.innerHTML = frame*4+"";
+          fpsDisplay.innerHTML = frame + "";
           frame=0;
-        }, 250);
+        }, 1000);
 
         camera.target = scene;
         lastTime = (new Date()).getTime(); // so the fps isn't weird initially
