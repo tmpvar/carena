@@ -8,7 +8,7 @@
     <script type="text/javascript">
       (function() {
         var wrenderer = carena.build({}, ["carena.Renderer"], {canvas: document.getElementById("draggable-window")});
-            wcamera   = carena.build({}, ["carena.Camera"], { renderer: wrenderer});
+            wcamera   = carena.build({}, ["carena.Camera", "carena.DragManager"], { renderer: wrenderer});
             cwindow  = carena.build({}, ["carena.Node", "carena.Eventable", "carena.Draggable"]),
             wbutton  = carena.build({}, ["carena.Node", "carena.Eventable", "carena.RelativeToParent"]),
             wmouse    = {x:0, y:0},

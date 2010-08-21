@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>Carena</title>
+    <script type="text/javascript" src="../lib/carena.js"></script>
+  </head>
+  <body>
+    <canvas width="600" height="600" id="draggable-window"></canvas>
+    <br />
+    <span id="fps"></span> fps
+    <script type="text/javascript">
+      (function() {
+        var canvas   = document.getElementById("draggable-window")
+            renderer = carena.build({}, ["carena.Renderer"], {
+              canvas: canvas
+            }),
+            camera = carena.build({}, [
+              "carena.Camera",
+              "carena.DragManager"
+            ], {
+              renderer: renderer
+            }),
+            scene = carena.build({}, ["carena.Node", "carena.Eventable"]),
+            mouse    = {x:0, y:0},
+            fps      = 1000/200
+            averageFPS = 0
+            frame = 1,
+            lastTime = 0,
+            fpsDisplay = document.getElementById("fps");
+
+        for (var i=0;i<10000; i++) {
+          var node = carena.build({
+            x: (Math.random()*canvas.width)%canvas.width,
+            y: (Math.random()*canvas.height)%canvas.height,
+            width: 1,
+            height: 1,
+            color: "white",
+            update : function(obj) {
+              obj.x = obj.x + 1;
+            }
+          }, ["carena.Node"]);
+
+          scene.add(node);
+        }
+
+
+        setTimeout(function update() {
+          scene.descend(function(node) {
+            if (node.update) { node.update(node); }
+          });
+          setTimeout(update, 10);
+        },10);
+
+
+        camera.target = scene;
+        lastTime = (new Date()).getTime(); // so the fps isn't weird initially
+        setTimeout(function renderDraggableWindow() {
+          thisTime = (new Date).getTime();
+          averageFPS = ((averageFPS + ((thisTime-lastTime)/frame))/2);
+          lastTime = thisTime;
+          frame=0;
+          fpsDisplay.innerHTML = ((averageFPS/1000) + "").substring(0, 4);
+          camera.render();
+          frame++;
+          setTimeout(renderDraggableWindow, fps);
+        }, fps);
+      }());
+    </script>
+  </body>
+</html>
