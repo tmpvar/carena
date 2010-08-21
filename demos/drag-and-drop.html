@@ -30,10 +30,10 @@
               canvas: document.getElementById("drag-and-drop")
             }),
             camera   = carena.build({},
-              ["carena.Camera", "carena.DropManager"],
+              ["carena.Camera", "carena.DropManager", "carena.DragManager"],
               { renderer: renderer}
             ),
-            BaseNode = carena.design({}, ["carena.Node", "carena.Draggable"]) ;
+            BaseNode = carena.design({}, ["carena.Node","carena.Eventable", "carena.Draggable"]) ;
             scene    = BaseNode(),
             node     = BaseNode({}, ["carena.DropTarget"]),
             drag1    = BaseNode({}, ["carena.RelativeToParent"]),
