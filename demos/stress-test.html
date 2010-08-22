@@ -8,121 +8,84 @@
     <br />
     <span id="fps" style='color:white'></span>
     <script type="text/javascript">
-      (function() {
+var canvas = document.getElementById("draggable-window"),
+    ctx,
+    fps = 1000 / 60,
+    frame = 1,
+    bx = canvas.width,
+    by = canvas.height,
+    lastTime = 0,
+    fpsDisplay = document.getElementById("fps"), scene = {children:[]};
 
-        var canvas   = document.getElementById("draggable-window")
-            renderer = carena.build({}, ["carena.Renderer"], {
-              canvas: canvas
-            }),
-            camera = carena.build({}, [
-              "carena.Camera",
-              "carena.DragManager"
-            ], {
-              renderer: renderer
-            }),
-            scene = carena.build({}, ["carena.Node", "carena.Eventable"]),
-            mouse    = {x:0, y:0},
-            fps      = 1000/60,
-            averageFPS = 0
-            frame = 1,
-            lastTime = 0,
-            fpsDisplay = document.getElementById("fps");
+canvas.width = document.width - 30;
+canvas.height = document.height - 60;
+bx = canvas.width;
+by = canvas.height;
 
-        canvas.width = document.width-30;
-        canvas.height = document.height-60;
-        for (var i=0;i<7000; i++) {
-          var node = carena.build({
-            x: Math.floor((Math.random()*canvas.width)%canvas.width),
-            y: Math.floor((Math.random()*canvas.height)%canvas.height),
-            width: 1,
-            height: 1,
-            color: "rgba(255,255,255,10)",
-            update : function(obj) {
-              obj.x = obj.x + 10;
-            }
-          }, ["carena.Node"]);
+ctx = canvas.getContext("2d");
+for (var i = 0; i < 5000; i++) {
+    scene.children.push({
+        x: Math.floor((Math.random() * bx) % bx),
+        y: Math.floor((Math.random() * by) % by),
+        color: "rgba(255,255,255,10)"
+    });
+}
+document.body.style.backgroundColor = "black";
+ctx.fillStyle = "black";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+var cw = canvas.width,
+    ch = canvas.height,
+    imageData = ctx.getImageData(0, 0, cw, ch),
+    child, childrenl = scene.children.length,
+    loc, updateTime = 5,
+    start, dirty = false,
+    idata = imageData.data,
+    fallRate = 2,
+    childx, childy;
 
-          scene.add(node);
-        }
-        document.body.style.backgroundColor = "black";
-        renderer.context.fillStyle = "black";
-        renderer.context.fillRect(0,0,canvas.width, canvas.height);
-        var cw = canvas.width,
-            ch = canvas.height,
-            imageData = renderer.context.getImageData(0,0,cw,ch),
-            child,
-            childrenl = scene.children.length,
-            loc,
-            updateTime = 5, start, dirty = false,
-            ctx = renderer.context,
-            idata = imageData.data,
-            fallRate = 1,
-            childx,
-            childy;
+setTimeout(function update() {
+    for (var i = 0; i < childrenl; i++) {
+        child = scene.children[i];
+        childx = child.x;
+        childy = child.y;
+        loc = (childx * 4) + (cw * childy * 4);
 
-        setTimeout(function update() {
-//renderer.context.fillRect(0, 0, canvas.width, canvas.height);
-//imageData = renderer.context.getImageData(0,0,cw,ch);
-
-          for (var i=0; i<childrenl; i++) {
-            child = scene.children[i];
-            childx = child.x;
-            childy = child.y;
-            loc   = (childx*4) + (cw*childy*4);
-
-            if (childy >= ch-fallRate || idata[loc+(cw*4*fallRate)] === 255) {
-              idata[loc+3]=255;
-              child.x = Math.floor((Math.random()*canvas.width)%cw);
-              child.y = Math.floor((Math.random()*canvas.height)%ch);
-              continue;
-            }
-
-
-            idata[loc] = 0;
-            idata[loc+1] = 0;
-            idata[loc+2] = 0;
-            child.y+=fallRate;
-
-            loc   = (child.x*4) + (cw*child.y*4)
-
-            idata[loc] = 255;
+        if (childy >= ch - fallRate || idata[loc + (cw * 4 * fallRate)] === 150 ||
+            idata[loc - 4] === 150 || idata[loc + 4] === 150) {
+            idata[loc] = 150;
             idata[loc+1] = 255;
-            idata[loc+2] = 255;
-            idata[loc+3] = 100;
-            dirty = true;
-          }
-          setTimeout(update, updateTime);
-        }, 10);
+            idata[loc+2] = 106;
+            idata[loc+3] = 255;
+            child.x = Math.floor(Math.random() * bx) % bx;
+            child.y = Math.floor(Math.random() * by) % by;
+            continue;
+        }
 
-        var renderi = 0, children = scene.children, childrenl = children.length;
+        idata[loc] = 0;
+        idata[loc + 1] = 0;
+        idata[loc + 2] = 0;
+        child.y += fallRate;
+        loc = (child.x * 4) + (cw * child.y * 4);
+        idata[loc] = 47;
+        idata[loc + 1] = 12;
+        idata[loc + 2] = 232;
+        idata[loc + 3] = 100;
+        dirty = true;
+    }
+    setTimeout(update, updateTime);
+}, 10);
 
-        setTimeout(function render() {
-          ctx.putImageData(imageData, 0,0);
-          frame++;
-          setTimeout(render, fps);
-        },fps);
+setTimeout(function render() {
+    ctx.putImageData(imageData, 0, 0);
+    frame++;
+    setTimeout(render, fps);
+}, fps);
 
 
-        setInterval(function() {
-          fpsDisplay.innerHTML = frame+"fps";
-          frame=0;
-        }, 1000);
-
-        camera.target = scene;
-        lastTime = (new Date()).getTime();
-        // so the fps isn't weird initially
- //       camera.render();
-/*        setTimeout(function renderDraggableWindow() {
-          var l = scene.children.length;
-          for (var i=0; i<l; i++) {
-            var node = scene.children[i];
-            if (node.render) { node.render(renderer); }
-          }
-          //camera.render();
-          frame++;
-          setTimeout(renderDraggableWindow, 0);
-        }, fps);*/
-      }());
+setInterval(function fpsupdate() {
+    fpsDisplay.innerHTML = frame + "fps";
+    frame = 0;
+}, 1000);
     </script>
   </body>
 </html>
