@@ -4,11 +4,12 @@
     <script type="text/javascript" src="../lib/carena.js"></script>
   </head>
   <body>
-    <canvas width="600" height="600" id="draggable-window"></canvas>
+    <canvas width="10" height="6" id="draggable-window"></canvas>
     <br />
     <span id="fps" style='color:white'></span>
     <script type="text/javascript">
       (function() {
+
         var canvas   = document.getElementById("draggable-window")
             renderer = carena.build({}, ["carena.Renderer"], {
               canvas: canvas
@@ -27,13 +28,15 @@
             lastTime = 0,
             fpsDisplay = document.getElementById("fps");
 
-        for (var i=0;i<10000; i++) {
+        canvas.width = document.width-30;
+        canvas.height = document.height-60;
+        for (var i=0;i<5000; i++) {
           var node = carena.build({
             x: Math.floor((Math.random()*canvas.width)%canvas.width),
             y: Math.floor((Math.random()*canvas.height)%canvas.height),
             width: 1,
             height: 1,
-            color: "white",
+            color: "rgba(255,255,255,10)",
             update : function(obj) {
               obj.x = obj.x + 10;
             }
@@ -50,8 +53,12 @@
             child,
             childrenl = scene.children.length,
             loc,
-            updateTime = 25, start, dirty = false,
-            ctx = renderer.context;
+            updateTime = 5, start, dirty = false,
+            ctx = renderer.context,
+            idata = imageData.data,
+            fallRate = 1,
+            childx,
+            childy;
 
         setTimeout(function update() {
 //renderer.context.fillRect(0, 0, canvas.width, canvas.height);
@@ -59,21 +66,38 @@
 
           for (var i=0; i<childrenl; i++) {
             child = scene.children[i];
-            child.x++;
+            childx = child.x;
+            childy = child.y;
+            loc   = (childx*4) + (cw*childy*4);
+
+            if (childy >= ch-fallRate || idata[loc+(cw*4*fallRate)] === 255) {
+              idata[loc+3]=255;
+              child.x = Math.floor((Math.random()*canvas.width)%cw);
+              child.y = Math.floor((Math.random()*canvas.height)%ch);
+              continue;
+            }
+
+
+            idata[loc] = 0;
+            idata[loc+1] = 0;
+            idata[loc+2] = 0;
+            child.y+=fallRate;
+
             loc   = (child.x*4) + (cw*child.y*4)
-            imageData.data[loc+1] = 255;
-            imageData.data[loc+2] = 255;
-            imageData.data[loc+3] = 255;
-            imageData.data[loc+4] = 255;
+
+            idata[loc] = 255;
+            idata[loc+1] = 255;
+            idata[loc+2] = 255;
+            idata[loc+3] = 100;
+            dirty = true;
           }
-          dirty = true;
           setTimeout(update, updateTime);
         }, 10);
 
         var renderi = 0, children = scene.children, childrenl = children.length;
 
         setTimeout(function render() {
-          renderer.context.putImageData(imageData, 0,0);
+          ctx.putImageData(imageData, 0,0);
           frame++;
           setTimeout(render, fps);
         },fps);
