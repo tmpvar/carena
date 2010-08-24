@@ -143,8 +143,13 @@ midNode.event.bind("test.event", function(ev, obj) {
 botNode.event.trigger("test.event");
 ok(eventCount === 3, "when an event is triggered it bubbles up the tree");
 
-botNode.event.trigger("test.event.further");
-ok(eventCount === 3, "absolute events are matched exactly");
+eventCount = 0
+var absoluteEventTest = eventNodeFactory();
+absoluteEventTest.event.bind("test.event", function() {
+  eventCount++;
+})
+absoluteEventTest.event.trigger("test.event.further");
+ok(eventCount === 0, "absolute events are matched exactly");
 
 eventCount = 0;
 midNode.event.unbind("test.*");
