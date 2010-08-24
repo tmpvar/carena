@@ -142,6 +142,10 @@ midNode.event.bind("test.event", function(ev, obj) {
 
 botNode.event.trigger("test.event");
 ok(eventCount === 3, "when an event is triggered it bubbles up the tree");
+
+botNode.event.trigger("test.event.further");
+ok(eventCount === 3, "absolute events are matched exactly");
+
 eventCount = 0;
 midNode.event.unbind("test.*");
 botNode.event.trigger("test.event");
