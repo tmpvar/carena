@@ -469,8 +469,8 @@ function ascend(obj, fn, depth) {
         <li>mouse.out  - mouse moves off of a <em>node</em> in the scene</em>
         <li>mouse.down - when <em>mousedown</em> DOM event is handled</li>
         <li>mouse.up - when a <em>mouseup</em> DOM event is handled</li>
-        <li>mouse.click - single <em>mousedown<em> and <em>mouseup</em></li>
-        <li>mouse.click.[2-n] - multiple <em>mousedown<em>s and <em>mouseup</em>s within the timeout</li>
+        <li>mouse.click - single <em>mousedown</em> and <em>mouseup</em></li>
+        <li>mouse.click.[2-n] - multiple <em>mousedown</em>s and <em>mouseup</em>s within the timeout</li>
       </ul>
     </p>
     <h4>Getters / Setters</h4>
@@ -654,6 +654,28 @@ function ascend(obj, fn, depth) {
         </li>
       </ul>
     </p>
+    <h3>Style</h3>
+    <p>
+      Provider for evented CSS properties. Provides a <em>node</em>.<strong>style</strong> property which
+      Currently supports:
+      <ul>
+        <li><em>node.style</em>.<strong>paddingLeft</strong></li>
+        <li><em>node.style</em>.<strong>paddingRight</strong></li>
+        <li><em>node.style</em>.<strong>paddingTop</strong></li>
+        <li><em>node.style</em>.<strong>paddingBottom</strong></li>
+      </ul>
+
+      Each of these properties emit a "style.&lt;property name&gt;" event when changed. The <em>event</em>
+      payload includes: <em>node</em>, previous, current.
+
+    <h3>Box</h3>
+    <p>
+      Provider of a CSS box model.  This feature is meant to be stacked on the <em>Style</em> feature,
+      and in fact, it requires it.  Currently supports:
+      <ul>
+        <li><em>node.style</em>.<strong>innerHeight</strong> (readonly)</li>
+        <li><em>node.style</em>.<strong>innerWidth</strong>  (readonly)</li>
+      </ul>
 
     <h2>Demos</h2>
     <ul>
