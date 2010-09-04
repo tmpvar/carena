@@ -243,6 +243,25 @@ ok(d.x === 10, "Setting a child's x should still work");
 b.x = 500;
 ok(d.x === 460, "(500-50) + 10 == d.x, aka 460 not " + d.x);
 
+// carena.feature.Box
+// Basic css3 box model
+var box = carena.build({}, ['carena.Box']);
+
+// Box requires carena.feature.Style
+box.width  = 100;
+box.height = 50;
+box.style.paddingLeft = 10;
+box.style.paddingRight = 10;
+
+ok(box.innerWidth === 80, "left/right padding contracts the innerWidth");
+ok(box.width = 100, "padding does not enlarge the width");
+ok(box.height === 50, "left/right padding does not affect the height");
+
+box.style.paddingTop = 30;
+box.style.paddingBottom = 10;
+ok(box.innerHeight === 10, "top/bottom padding contracts the innerHeight");
+ok(box.height === 50, "top/bottom padding should not affect the height");
+
 
 sys.puts(JSON.stringify({
  total: pass+fail,
