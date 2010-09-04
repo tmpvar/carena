@@ -253,14 +253,19 @@ box.height = 50;
 box.style.paddingLeft = 10;
 box.style.paddingRight = 10;
 
-ok(box.innerWidth === 80, "left/right padding contracts the innerWidth");
+ok(box.style.innerWidth === 80, "left/right padding contracts the innerWidth");
 ok(box.width = 100, "padding does not enlarge the width");
 ok(box.height === 50, "left/right padding does not affect the height");
 
 box.style.paddingTop = 30;
 box.style.paddingBottom = 10;
-ok(box.innerHeight === 10, "top/bottom padding contracts the innerHeight");
+ok(box.style.innerHeight === 10, "top/bottom padding contracts the innerHeight");
 ok(box.height === 50, "top/bottom padding should not affect the height");
+
+box.width = 200;
+box.height = 40;
+ok(box.style.innerWidth === 180, "innerWidth changes when the width changes");
+ok(box.style.innerHeight === 0, "innerHeight changes when height changes");
 
 
 sys.puts(JSON.stringify({
