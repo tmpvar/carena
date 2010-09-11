@@ -267,6 +267,9 @@ box.height = 40;
 ok(box.style.innerWidth === 180, "innerWidth changes when the width changes");
 ok(box.style.innerHeight === 0, "innerHeight changes when height changes");
 
+// Background color
+var colorBox = carena.build({style:{backgroundColor:"green"}},["carena.Box"]);
+ok(colorBox.style.backgroundColor === "green", "styles should be setup after creation");
 
 sys.puts(JSON.stringify({
  total: pass+fail,
