@@ -89,10 +89,10 @@ ok(0 === parent.children.length, "remove should update the length");
 
 // Node Tree Traversal
 var traversal1  = nodeFactory(),
-    traversal2  = nodeFactory()
+    traversal2  = nodeFactory(),
     traversal2a = nodeFactory(),
-    traversal3  = nodeFactory()
-    ;
+    traversal3  = nodeFactory();
+
 traversal1.add(traversal2.add(traversal2a)).add(traversal3);
 
 // test tiering dirtyness!
@@ -103,23 +103,11 @@ traversal1.remove(traversal3);
 ok(true === traversal1.dirty, "removing a node should make the parent dirty");
 traversal1.add(traversal3);
 
-var allResult = traversal1.descend();
-ok(allResult.nodesWalked === 4, "walked " + allResult.nodesWalked + " of 4 nodes");
-
-var falseResult = traversal1.descend(function(node) {
-  if (node === traversal2) {
-    return false;
-  }
+var descendNodes = []
+var allResult = traversal1.descend(function(node) {
+  descendNodes.push(node);
 });
-ok(falseResult.nodesWalked === 3, "when a walk callback returns false, stop walking that branch");
-
-var cancelledResult = traversal1.descend(function(node, walker) {
-  if (node === traversal2) {
-    walker.stop();
-  }
-});
-ok(cancelledResult.nodesWalked === 2, "when a walk is cancelled, stop immediately");
-
+ok(descendNodes.length === 4, "walked " + descendNodes.length + " of 4 nodes");
 
 // Node Event Feature
 var eventNodeFactory = carena.design({}, ["carena.Node", "carena.Eventable"]);

@@ -1,5 +1,6 @@
 {
   "todo" : [
+    "[REFACTOR] add event capture phase",
     "write tutorial docs",
     "respect z coord",
     "port the clear rects and overlap cache to carena",
