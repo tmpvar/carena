@@ -1,0 +1,20 @@
+{
+  "name": "carena",
+  "description": "",
+  "version": "0.1.0",
+  "keywords": [ "" ],
+  "maintainers": [
+    { "name": "Elijah Insua", "web": "http://tmpvar.com" }
+  ],
+  "contributors": [
+    { "name": "Elijah Insua", "web": "http://tmpvar.com" }
+  ],
+  "licenses": [ "MIT" ],
+  "repositories": {
+    "type": "git",
+    "url": "http://github.com/tmpvar/carena.git"
+  },
+  "dependencies": {
+    "connect" : ">=0.2.7"
+  }
+}
