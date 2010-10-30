@@ -1,7 +1,7 @@
 {
   "name": "carena",
   "description": "",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "keywords": [ "" ],
   "maintainers": [
     { "name": "Elijah Insua", "web": "http://tmpvar.com" }
@@ -16,5 +16,6 @@
   },
   "dependencies": {
     "connect" : ">=0.2.7"
-  }
+  },
+  "main" : "lib"
 }
