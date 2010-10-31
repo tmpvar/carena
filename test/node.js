@@ -1,5 +1,4 @@
-var sys    = require("sys"),
-    carena = require("../lib/carena").carena;
+var carena = require("../lib/carena").carena;
 
 var tests = [], pass = 0, fail = 0;
 var ok = function(logic, failmsg)
@@ -15,7 +14,7 @@ var ok = function(logic, failmsg)
       try {
         throw new Error(failmsg);
       } catch (e) {
-        sys.puts(e.stack);
+        console.log(e.stack);
         fail++;
       }
     } else {
@@ -34,6 +33,19 @@ var anExtendedNode = nodeFactory({}, ["test.feature"]);
 
 ok(anExtendedNode.set === true, "Built factories should respect new features");
 ok(anExtendedNode.x === 0, "Built factories should still respect old features");
+
+// ID caching
+var idroot  = nodeFactory({myId:"root"}, ["carena.Node"]),
+    idchild = nodeFactory({myId:"child"}, ["carena.Node"]);
+
+ok(idroot.find("#child") === null, "isolated nodes have no id cache");
+idroot.add(idchild);
+ok(idroot.find("#child") === idchild, "child should be found");
+idroot.remove(idchild);
+ok(idroot.find("#child") === null, "isolated nodes have no id cache");
+
+
+
 
 // Node Mutation Events
 var events        = ['x', 'y', 'z', 'height', 'width'],
@@ -259,7 +271,7 @@ ok(box.style.innerHeight === 0, "innerHeight changes when height changes");
 var colorBox = carena.build({style:{backgroundColor:"green"}},["carena.Box"]);
 ok(colorBox.style.backgroundColor === "green", "styles should be setup after creation");
 
-sys.puts(JSON.stringify({
+console.log(JSON.stringify({
  total: pass+fail,
  fail: fail,
  pass: pass
