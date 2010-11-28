@@ -165,7 +165,8 @@ argumentTest.event.bind("argument.test", function(name, data) {
 });
 
 argumentTest.event.trigger("argument.test");
-ok(eventCount === 1, "the name of the event should be passed into the event handler");
+ok(eventCount === 1,
+   "the name of the event should be passed into the event handler");
 
 // Bounding boxen (no rotation)
 var bounding    = nodeFactory(),
@@ -191,14 +192,31 @@ child2.y=1;
 child2.width=10;
 child2.height=10;
 
+/*
+(-1,-1)
+ _____.............
+|     |           .
+|     | __________.
+|     ||          |
+|_____||          |
+.      |          |
+.      |          |
+.      |          |
+.      |          |
+.      |          |
+.      |          |
+.      |          |
+.......|__________| (16, 11)
+
+*/
+
+
 // Bounding box check
 ok(bounding.bounds, "bounds should calculate on the first call/when dirty");
 ok(bounding.bounds.x      === -1, "bounding rect x is invalid");
-
 ok(bounding.bounds.y      === -1, "bounding rect y is invalid");
-ok(bounding.bounds.width  === 16, "bounding rect width is invalid");
-ok(bounding.bounds.height === 11, "bounding rect height is invalid");
-ok(bounding.dirty === false, "scene should be clean after a bounds calculation");
+ok(bounding.bounds.width  === 17, "bounding rect width is invalid");
+ok(bounding.bounds.height === 12, "bounding rect height is invalid");
 
 ok(child2.bounds.x      === 6, "child2 rect x is invalid");
 ok(child2.bounds.y      === 1, "child2 rect y is invalid");
@@ -208,7 +226,7 @@ ok(child2.bounds.height === 10, "child2 rect height is invalid");
 // Point intersection
 ok(bounding.containsPoint(-1,-1) === false, "scene starts at 0,0");
 ok(bounding.containsPoint(5,5) === true, "5,5 is the center of the scene");
-ok(bounding.containsPoint(10,10) === true, "10,10 is the bottom right of scene");
+ok(bounding.containsPoint(10,10) === true, "10,10 is the bottom right");
 ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child1.containsPoint(3,3) === true, "3,3 is contained in child1");
 ok(child2.containsPoint(8,10) === true, "8,10 is contained in child2");
